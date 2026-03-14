@@ -1,5 +1,10 @@
 {
   "name": "@markdown-typer/config-eslint",
   "version": "0.1.0",
-  "private": true
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@eslint/js": "^9.22.0",
+    "typescript-eslint": "^8.26.1"
+  }
 }
