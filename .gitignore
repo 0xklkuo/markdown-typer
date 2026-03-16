@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
@@ -36,6 +37,7 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+/build
 
 # Dependency directories
 node_modules/
@@ -69,6 +71,7 @@ web_modules/
 # dotenv environment variable files
 .env
 .env.*
+.env*.*
 !.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -143,3 +146,19 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# NestJS
+/tmp
+.tmp
+
+# Prisma
+/generated/prisma
+
+# Next.js
+.pnp.js
+/.next/
+/out/
+.DS_Store
+*.pem
+.vercel
+next-env.d.ts
