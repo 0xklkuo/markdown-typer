@@ -1,11 +1,10 @@
 const MARKDOWN_HEADING_PREFIX = /^(#{1,6})\s+/;
-const MARKDOWN_HEADING_LENGTH = 120;
+const MAX_TITLE_LENGTH = 120;
 
-function normalizeTitleLine(line: string): string {
-  return line.replace(MARKDOWN_HEADING_PREFIX, '').trim();
-}
+const normalizeTitleLine = (line: string): string =>
+  line.replace(MARKDOWN_HEADING_PREFIX, '').trim();
 
-export function deriveTitleFromContent(content: string): string {
+export const deriveTitleFromContent = (content: string): string => {
   const lines = content.split('\n');
 
   for (const rawLine of lines) {
@@ -18,9 +17,9 @@ export function deriveTitleFromContent(content: string): string {
     const normalizedLine = normalizeTitleLine(trimmedLine);
 
     if (normalizedLine) {
-      return normalizedLine.slice(0, MARKDOWN_HEADING_LENGTH);
+      return normalizedLine.slice(0, MAX_TITLE_LENGTH);
     }
   }
 
   return 'Untitled';
-}
+};

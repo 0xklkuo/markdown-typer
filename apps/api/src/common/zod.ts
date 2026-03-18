@@ -12,7 +12,7 @@ type ValidationErrorResponse = {
   issues: ValidationIssue[];
 };
 
-function formatZodIssuePath(path: PropertyKey[]): string {
+const formatZodIssuePath = (path: PropertyKey[]): string => {
   if (path.length === 0) {
     return 'root';
   }
@@ -23,9 +23,11 @@ function formatZodIssuePath(path: PropertyKey[]): string {
     )
     .join('.')
     .replace('.[', '[');
-}
+};
 
-function toValidationErrorResponse(error: ZodError): ValidationErrorResponse {
+const toValidationErrorResponse = (
+  error: ZodError,
+): ValidationErrorResponse => {
   return {
     message: 'Validation failed',
     issues: error.issues.map((issue) => ({
@@ -34,12 +36,12 @@ function toValidationErrorResponse(error: ZodError): ValidationErrorResponse {
       code: issue.code,
     })),
   };
-}
+};
 
-export function parseWithZod<TSchema extends z.ZodType>(
+export const parseWithZod = <TSchema extends z.ZodType>(
   schema: TSchema,
   input: unknown,
-): z.output<TSchema> {
+): z.output<TSchema> => {
   try {
     return schema.parse(input);
   } catch (error: unknown) {
@@ -49,4 +51,4 @@ export function parseWithZod<TSchema extends z.ZodType>(
 
     throw error;
   }
-}
+};

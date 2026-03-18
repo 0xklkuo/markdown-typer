@@ -1,18 +1,15 @@
 import { z } from 'zod';
 
+const noteContentSchema = z.string().max(100_000, {
+  error: 'Note content must be 100000 characters or fewer.',
+});
+
 export const createNoteSchema = z.object({
-  content: z
-    .string()
-    .max(100_000, {
-      error: 'Note content must be 100000 characters or fewer.',
-    })
-    .default(''),
+  content: noteContentSchema.default(''),
 });
 
 export const updateNoteSchema = z.object({
-  content: z.string().max(100_000, {
-    error: 'Note content must be 100000 characters or fewer.',
-  }),
+  content: noteContentSchema,
 });
 
 export const noteIdParamSchema = z.object({

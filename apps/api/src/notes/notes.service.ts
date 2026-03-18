@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Note, User } from '@prisma/client';
 
+import { getEnv } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
-import { env } from '../config/env';
+import type { NoteResponse } from './notes.types';
 import { deriveTitleFromContent } from './notes.utils';
-import { NoteResponse } from './notes.types';
 
 type ListNotesOptions = {
   q?: string;
@@ -17,13 +17,12 @@ export class NotesService {
 
   async createNote(content: string): Promise<NoteResponse> {
     const user = await this.getDefaultUser();
-    const title = deriveTitleFromContent(content);
 
     const note = await this.prisma.note.create({
       data: {
         userId: user.id,
         content,
-        title,
+        title: deriveTitleFromContent(content),
       },
     });
 
@@ -58,42 +57,26 @@ export class NotesService {
           }
           : {}),
       },
-      orderBy: [
-        { isPinned: 'desc' },
-        { updatedAt: 'desc' },
-      ],
+      orderBy: [{ isPinned: 'desc' }, { updatedAt: 'desc' }],
     });
 
-    return notes.map((note) => this.toNoteResponse(note));
+    return notes.map(this.toNoteResponse);
   }
 
   async getNoteById(id: string): Promise<NoteResponse> {
-    const user = await this.getDefaultUser();
-
-    const note = await this.prisma.note.findFirst({
-      where: {
-        id,
-        userId: user.id,
-        deletedAt: null,
-      },
-    });
-
-    if (!note) {
-      throw new NotFoundException(`Note with id "${id}" was not found.`);
-    }
+    const note = await this.requireActiveNote(id);
 
     return this.toNoteResponse(note);
   }
 
   async updateNote(id: string, content: string): Promise<NoteResponse> {
     const note = await this.requireActiveNote(id);
-    const title = deriveTitleFromContent(content);
 
     const updatedNote = await this.prisma.note.update({
       where: { id: note.id },
       data: {
         content,
-        title,
+        title: deriveTitleFromContent(content),
       },
     });
 
@@ -114,32 +97,30 @@ export class NotesService {
   }
 
   async pinNote(id: string): Promise<NoteResponse> {
-    const note = await this.requireActiveNote(id);
-
-    const pinnedNote = await this.prisma.note.update({
-      where: { id: note.id },
-      data: {
-        isPinned: true,
-      },
-    });
-
-    return this.toNoteResponse(pinnedNote);
+    return this.updatePinnedState(id, true);
   }
 
   async unpinNote(id: string): Promise<NoteResponse> {
+    return this.updatePinnedState(id, false);
+  }
+
+  private async updatePinnedState(
+    id: string,
+    isPinned: boolean,
+  ): Promise<NoteResponse> {
     const note = await this.requireActiveNote(id);
 
-    const unpinnedNote = await this.prisma.note.update({
+    const updatedNote = await this.prisma.note.update({
       where: { id: note.id },
-      data: {
-        isPinned: false,
-      },
+      data: { isPinned },
     });
 
-    return this.toNoteResponse(unpinnedNote);
+    return this.toNoteResponse(updatedNote);
   }
 
   private async getDefaultUser(): Promise<User> {
+    const env = getEnv();
+
     const user = await this.prisma.user.findUnique({
       where: {
         email: env.DEFAULT_USER_EMAIL,
@@ -173,15 +154,13 @@ export class NotesService {
     return note;
   }
 
-  private toNoteResponse(note: Note): NoteResponse {
-    return {
-      id: note.id,
-      title: note.title,
-      content: note.content,
-      isPinned: note.isPinned,
-      createdAt: note.createdAt.toISOString(),
-      updatedAt: note.updatedAt.toISOString(),
-      deletedAt: note.deletedAt?.toISOString() ?? null,
-    };
-  }
+  private readonly toNoteResponse = (note: Note): NoteResponse => ({
+    id: note.id,
+    title: note.title,
+    content: note.content,
+    isPinned: note.isPinned,
+    createdAt: note.createdAt.toISOString(),
+    updatedAt: note.updatedAt.toISOString(),
+    deletedAt: note.deletedAt?.toISOString() ?? null,
+  });
 }

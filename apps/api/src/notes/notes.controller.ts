@@ -8,6 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+
 import { parseWithZod } from '../common/zod';
 import {
   createNoteSchema,
@@ -15,23 +16,21 @@ import {
   noteIdParamSchema,
   updateNoteSchema,
 } from './notes.schemas';
-import { NoteResponse } from './notes.types';
-import { NotesService } from './notes.service';
 import type {
   CreateNoteInput,
   ListNotesQueryInput,
   NoteIdParamsInput,
   UpdateNoteInput,
 } from './notes.schemas';
+import { NotesService } from './notes.service';
+import type { NoteResponse } from './notes.types';
 
 @Controller('notes')
 export class NotesController {
   constructor(private readonly notesService: NotesService) { }
 
   @Post()
-  async createNote(
-    @Body() body: CreateNoteInput,
-  ): Promise<NoteResponse> {
+  async createNote(@Body() body: CreateNoteInput): Promise<NoteResponse> {
     const parsedBody = parseWithZod(createNoteSchema, body);
 
     return this.notesService.createNote(parsedBody.content);
@@ -79,18 +78,14 @@ export class NotesController {
   }
 
   @Post(':id/pin')
-  async pinNote(
-    @Param() params: NoteIdParamsInput,
-  ): Promise<NoteResponse> {
+  async pinNote(@Param() params: NoteIdParamsInput): Promise<NoteResponse> {
     const parsedParams = parseWithZod(noteIdParamSchema, params);
 
     return this.notesService.pinNote(parsedParams.id);
   }
 
   @Post(':id/unpin')
-  async unpinNote(
-    @Param() params: NoteIdParamsInput,
-  ): Promise<NoteResponse> {
+  async unpinNote(@Param() params: NoteIdParamsInput): Promise<NoteResponse> {
     const parsedParams = parseWithZod(noteIdParamSchema, params);
 
     return this.notesService.unpinNote(parsedParams.id);
