@@ -96,3 +96,30 @@ export const updateNote = async (
 
   return parseJsonResponse<Note>(response);
 };
+
+export const pinNote = async (id: string): Promise<Note> => {
+  const response = await fetch(`${getApiBaseUrl()}/notes/${id}/pin`, {
+    method: 'POST',
+    cache: 'no-store',
+  });
+
+  return parseJsonResponse<Note>(response);
+};
+
+export const unpinNote = async (id: string): Promise<Note> => {
+  const response = await fetch(`${getApiBaseUrl()}/notes/${id}/unpin`, {
+    method: 'POST',
+    cache: 'no-store',
+  });
+
+  return parseJsonResponse<Note>(response);
+};
+
+export const deleteNote = async (id: string): Promise<Note> => {
+  const response = await fetch(`${getApiBaseUrl()}/notes/${id}`, {
+    method: 'DELETE',
+    cache: 'no-store',
+  });
+
+  return parseJsonResponse<Note>(response);
+};

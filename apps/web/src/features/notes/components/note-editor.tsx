@@ -12,16 +12,26 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 type NoteEditorProps = {
   note: Note;
   onNoteSaved?: (note: Note) => void;
+  onTogglePin?: () => Promise<void>;
+  onDelete?: () => Promise<void>;
+  isPinning?: boolean;
+  isDeleting?: boolean;
+  actionErrorMessage?: string | null;
 };
 
 export const NoteEditor = ({
   note,
   onNoteSaved,
+  onTogglePin,
+  onDelete,
+  isPinning = false,
+  isDeleting = false,
+  actionErrorMessage = null,
 }: NoteEditorProps): React.ReactElement => {
   const [currentNote, setCurrentNote] = useState(note);
   const [content, setContent] = useState(note.content);
   const [saveState, setSaveState] = useState<SaveState>('idle');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
 
   const latestSavedContentRef = useRef(note.content);
   const currentRequestIdRef = useRef(0);
@@ -32,7 +42,7 @@ export const NoteEditor = ({
     setCurrentNote(note);
     setContent(note.content);
     setSaveState('idle');
-    setErrorMessage(null);
+    setSaveErrorMessage(null);
     latestSavedContentRef.current = note.content;
     currentRequestIdRef.current = 0;
   }, [note]);
@@ -47,7 +57,7 @@ export const NoteEditor = ({
     const requestId = currentRequestIdRef.current + 1;
     currentRequestIdRef.current = requestId;
     setSaveState('saving');
-    setErrorMessage(null);
+    setSaveErrorMessage(null);
 
     void updateNote(currentNote.id, { content: debouncedContent })
       .then((updatedNote) => {
@@ -67,7 +77,7 @@ export const NoteEditor = ({
         }
 
         setSaveState('error');
-        setErrorMessage(
+        setSaveErrorMessage(
           error instanceof Error ? error.message : 'Failed to save note.',
         );
       });
@@ -96,7 +106,37 @@ export const NoteEditor = ({
           </p>
         </div>
 
-        <div className="text-xs text-slate-500">{statusText}</div>
+        <div className="flex items-center gap-2">
+          <div className="text-xs text-slate-500">{statusText}</div>
+
+          <button
+            type="button"
+            onClick={() => {
+              void onTogglePin?.();
+            }}
+            disabled={isPinning || isDeleting}
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isPinning
+              ? currentNote.isPinned
+                ? 'Unpinning...'
+                : 'Pinning...'
+              : currentNote.isPinned
+                ? 'Unpin'
+                : 'Pin'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              void onDelete?.();
+            }}
+            disabled={isDeleting || isPinning}
+            className="rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
+        </div>
       </header>
 
       <div className="flex-1 px-6 py-4">
@@ -104,14 +144,15 @@ export const NoteEditor = ({
           value={content}
           onChange={(event) => setContent(event.target.value)}
           placeholder="Start writing..."
-          className="min-h-[420px] w-full resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400"
+          disabled={isDeleting}
+          className="min-h-[420px] w-full resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 disabled:opacity-60"
           spellCheck={false}
         />
       </div>
 
-      {errorMessage ? (
+      {saveErrorMessage || actionErrorMessage ? (
         <div className="border-t border-red-200 bg-red-50 px-6 py-3 text-sm text-red-700">
-          {errorMessage}
+          {actionErrorMessage ?? saveErrorMessage}
         </div>
       ) : null}
     </section>
