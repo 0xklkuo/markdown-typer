@@ -2,6 +2,10 @@ import { Note } from '../types/note';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+type NoteContentInput = {
+  content: string;
+};
+
 const getApiBaseUrl = (): string => {
   if (!API_BASE_URL) {
     throw new Error('NEXT_PUBLIC_API_BASE_URL is not configured.');
@@ -64,18 +68,30 @@ export const getNoteById = async (id: string): Promise<Note> => {
   return parseJsonResponse<Note>(response);
 };
 
-export const createNote = async (input?: {
-  content?: string;
-}): Promise<Note> => {
+export const createNote = async (input: NoteContentInput): Promise<Note> => {
   const response = await fetch(`${getApiBaseUrl()}/notes`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     cache: 'no-store',
-    body: JSON.stringify({
-      content: input?.content ?? '',
-    }),
+    body: JSON.stringify(input),
+  });
+
+  return parseJsonResponse<Note>(response);
+};
+
+export const updateNote = async (
+  id: string,
+  input: NoteContentInput,
+): Promise<Note> => {
+  const response = await fetch(`${getApiBaseUrl()}/notes/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+    body: JSON.stringify(input),
   });
 
   return parseJsonResponse<Note>(response);

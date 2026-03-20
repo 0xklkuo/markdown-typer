@@ -14,6 +14,7 @@ const envSchema = z.object({
   DEFAULT_USER_EMAIL: z
     .email({ error: 'DEFAULT_USER_EMAIL must be a valid email address.' })
     .default('local@example.com'),
+  WEB_APP_ORIGIN: z.string().trim().min(1).default('http://localhost:3000'),
 });
 
 export type Env = z.infer<typeof envSchema>;

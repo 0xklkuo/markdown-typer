@@ -5,6 +5,7 @@ import { Note } from '../types/note';
 type NotesListProps = {
   notes: Note[];
   selectedNoteId?: string;
+  searchQuery?: string;
 };
 
 const formatUpdatedAt = (value: string): string =>
@@ -18,6 +19,7 @@ const formatUpdatedAt = (value: string): string =>
 export const NotesList = ({
   notes,
   selectedNoteId,
+  searchQuery,
 }: NotesListProps): React.ReactElement => {
   if (notes.length === 0) {
     return (
@@ -31,11 +33,17 @@ export const NotesList = ({
     <ul className="space-y-2">
       {notes.map((note) => {
         const isSelected = note.id === selectedNoteId;
+        const href = searchQuery?.trim()
+          ? {
+            pathname: `/notes/${note.id}`,
+            query: { q: searchQuery.trim() },
+          }
+          : `/notes/${note.id}`;
 
         return (
           <li key={note.id}>
             <Link
-              href={`/notes/${note.id}`}
+              href={href}
               className={[
                 'block rounded-lg border px-3 py-3 transition',
                 isSelected
