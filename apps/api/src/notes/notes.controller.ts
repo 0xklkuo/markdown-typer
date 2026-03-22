@@ -29,7 +29,7 @@ import type { NoteResponse } from './notes.types';
 
 @Controller('notes')
 export class NotesController {
-  constructor(private readonly notesService: NotesService) { }
+  constructor(private readonly notesService: NotesService) {}
 
   @Post()
   async createNote(@Body() body: CreateNoteInput): Promise<NoteResponse> {
@@ -75,18 +75,14 @@ export class NotesController {
   }
 
   @Delete(':id')
-  async deleteNote(
-    @Param() params: NoteIdParamsInput,
-  ): Promise<NoteResponse> {
+  async deleteNote(@Param() params: NoteIdParamsInput): Promise<NoteResponse> {
     const parsedParams = parseWithZod(noteIdParamSchema, params);
 
     return this.notesService.deleteNote(parsedParams.id);
   }
 
   @Post(':id/restore')
-  async restoreNote(
-    @Param() params: NoteIdParamsInput,
-  ): Promise<NoteResponse> {
+  async restoreNote(@Param() params: NoteIdParamsInput): Promise<NoteResponse> {
     const parsedParams = parseWithZod(noteIdParamSchema, params);
 
     return this.notesService.restoreNote(parsedParams.id);

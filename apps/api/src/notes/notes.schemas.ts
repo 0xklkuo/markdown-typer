@@ -41,7 +41,9 @@ export type UpdateNoteData = z.output<typeof updateNoteSchema>;
 export type NoteIdParamsInput = z.input<typeof noteIdParamSchema>;
 export type NoteIdParams = z.output<typeof noteIdParamSchema>;
 
-export type NoteVisibilityQueryInput = z.input<typeof noteVisibilityQuerySchema>;
+export type NoteVisibilityQueryInput = z.input<
+  typeof noteVisibilityQuerySchema
+>;
 export type NoteVisibilityQuery = z.output<typeof noteVisibilityQuerySchema>;
 
 export type ListNotesQueryInput = z.input<typeof listNotesQuerySchema>;

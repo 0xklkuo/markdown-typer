@@ -17,7 +17,7 @@ type GetNoteOptions = {
 
 @Injectable()
 export class NotesService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async createNote(content: string): Promise<NoteResponse> {
     const user = await this.getDefaultUser();
@@ -44,21 +44,21 @@ export class NotesService {
         ...(includeDeleted ? {} : { deletedAt: null }),
         ...(query
           ? {
-            OR: [
-              {
-                title: {
-                  contains: query,
-                  mode: 'insensitive',
+              OR: [
+                {
+                  title: {
+                    contains: query,
+                    mode: 'insensitive',
+                  },
                 },
-              },
-              {
-                content: {
-                  contains: query,
-                  mode: 'insensitive',
+                {
+                  content: {
+                    contains: query,
+                    mode: 'insensitive',
+                  },
                 },
-              },
-            ],
-          }
+              ],
+            }
           : {}),
       },
       orderBy: [{ isPinned: 'desc' }, { updatedAt: 'desc' }],

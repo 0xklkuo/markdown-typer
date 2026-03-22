@@ -176,7 +176,9 @@ export const NoteEditor = ({
         <textarea
           value={content}
           onChange={(event) => setContent(event.target.value)}
-          placeholder={isDeleted ? 'Restore this note to edit it.' : 'Start writing...'}
+          placeholder={
+            isDeleted ? 'Restore this note to edit it.' : 'Start writing...'
+          }
           disabled={isDeleting || isDeleted || isRestoring}
           className="min-h-[420px] w-full resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 disabled:opacity-60"
           spellCheck={false}

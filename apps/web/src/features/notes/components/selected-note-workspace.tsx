@@ -47,8 +47,8 @@ export const SelectedNoteWorkspace = ({
     setNotes((currentNotes) => {
       const nextNotes = currentNotes.some((note) => note.id === updatedNote.id)
         ? currentNotes.map((note) =>
-          note.id === updatedNote.id ? updatedNote : note,
-        )
+            note.id === updatedNote.id ? updatedNote : note,
+          )
         : [updatedNote, ...currentNotes];
 
       return sortNotes(nextNotes);
@@ -102,7 +102,9 @@ export const SelectedNoteWorkspace = ({
         params.set('includeDeleted', 'true');
       }
 
-      const nextUrl = params.toString() ? `/notes?${params.toString()}` : '/notes';
+      const nextUrl = params.toString()
+        ? `/notes?${params.toString()}`
+        : '/notes';
 
       router.push(nextUrl);
       router.refresh();

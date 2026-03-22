@@ -128,10 +128,7 @@ describe('NotesController', () => {
 
       service.getNoteById.mockResolvedValue(note);
 
-      const result = await controller.getNoteById(
-        { id: 'note_1' },
-        {},
-      );
+      const result = await controller.getNoteById({ id: 'note_1' }, {});
 
       expect(service.getNoteById).toHaveBeenCalledWith('note_1', {
         includeDeleted: false,

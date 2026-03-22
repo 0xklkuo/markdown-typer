@@ -8,4 +8,4 @@ import { NotesModule } from './notes/notes.module';
   imports: [PrismaModule, NotesModule],
   controllers: [HealthController],
 })
-export class AppModule { }
+export class AppModule {}

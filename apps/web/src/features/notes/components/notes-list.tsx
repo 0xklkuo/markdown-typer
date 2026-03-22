@@ -44,9 +44,9 @@ export const NotesList = ({
         const href =
           Object.keys(query).length > 0
             ? {
-              pathname: `/notes/${note.id}`,
-              query,
-            }
+                pathname: `/notes/${note.id}`,
+                query,
+              }
             : `/notes/${note.id}`;
 
         return (

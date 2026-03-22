@@ -4,9 +4,7 @@ type NoteDetailProps = {
   note: Note;
 };
 
-export const NoteDetail = ({
-  note,
-}: NoteDetailProps): React.ReactElement => {
+export const NoteDetail = ({ note }: NoteDetailProps): React.ReactElement => {
   return (
     <section className="flex min-h-[400px] flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <header className="border-b border-slate-200 pb-4">
