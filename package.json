@@ -10,12 +10,15 @@
     "typecheck": "pnpm -r typecheck",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check",
     "test": "pnpm test:api && pnpm test:web",
     "test:api": "pnpm --filter @markdown-typer/api test",
     "test:web": "pnpm --filter @markdown-typer/web test",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm format:check"
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@playwright/test": "^1.54.2",
     "prettier": "^3.5.3"
   }
 }
