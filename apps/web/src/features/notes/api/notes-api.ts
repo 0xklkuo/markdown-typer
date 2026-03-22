@@ -6,6 +6,10 @@ type NoteContentInput = {
   content: string;
 };
 
+type NoteVisibilityOptions = {
+  includeDeleted?: boolean;
+};
+
 const getApiBaseUrl = (): string => {
   if (!API_BASE_URL) {
     throw new Error('NEXT_PUBLIC_API_BASE_URL is not configured.');
@@ -60,8 +64,17 @@ export const listNotes = async (query?: {
   return parseJsonResponse<Note[]>(response);
 };
 
-export const getNoteById = async (id: string): Promise<Note> => {
-  const response = await fetch(`${getApiBaseUrl()}/notes/${id}`, {
+export const getNoteById = async (
+  id: string,
+  options?: NoteVisibilityOptions,
+): Promise<Note> => {
+  const url = new URL(`${getApiBaseUrl()}/notes/${id}`);
+
+  if (options?.includeDeleted) {
+    url.searchParams.set('includeDeleted', 'true');
+  }
+
+  const response = await fetch(url.toString(), {
     cache: 'no-store',
   });
 
@@ -118,6 +131,15 @@ export const unpinNote = async (id: string): Promise<Note> => {
 export const deleteNote = async (id: string): Promise<Note> => {
   const response = await fetch(`${getApiBaseUrl()}/notes/${id}`, {
     method: 'DELETE',
+    cache: 'no-store',
+  });
+
+  return parseJsonResponse<Note>(response);
+};
+
+export const restoreNote = async (id: string): Promise<Note> => {
+  const response = await fetch(`${getApiBaseUrl()}/notes/${id}/restore`, {
+    method: 'POST',
     cache: 'no-store',
   });
 

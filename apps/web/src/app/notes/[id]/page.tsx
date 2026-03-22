@@ -9,6 +9,7 @@ type NotePageProps = {
   }>;
   searchParams: Promise<{
     q?: string;
+    includeDeleted?: string;
   }>;
 };
 
@@ -17,16 +18,26 @@ const NotePage = async ({
   searchParams,
 }: NotePageProps): Promise<React.ReactElement> => {
   const { id } = await params;
-  const { q } = await searchParams;
+  const { q, includeDeleted } = await searchParams;
+  const shouldIncludeDeleted = includeDeleted === 'true';
 
   try {
-    const [notes, note] = await Promise.all([listNotes({ q }), getNoteById(id)]);
+    const [notes, note] = await Promise.all([
+      listNotes({
+        q,
+        includeDeleted: shouldIncludeDeleted,
+      }),
+      getNoteById(id, {
+        includeDeleted: shouldIncludeDeleted,
+      }),
+    ]);
 
     return (
       <SelectedNoteWorkspace
         initialNotes={notes}
         initialNote={note}
         searchQuery={q}
+        includeDeleted={shouldIncludeDeleted}
       />
     );
   } catch {

@@ -14,12 +14,14 @@ import {
   createNoteSchema,
   listNotesQuerySchema,
   noteIdParamSchema,
+  noteVisibilityQuerySchema,
   updateNoteSchema,
 } from './notes.schemas';
 import type {
   CreateNoteInput,
   ListNotesQueryInput,
   NoteIdParamsInput,
+  NoteVisibilityQueryInput,
   UpdateNoteInput,
 } from './notes.schemas';
 import { NotesService } from './notes.service';
@@ -51,10 +53,14 @@ export class NotesController {
   @Get(':id')
   async getNoteById(
     @Param() params: NoteIdParamsInput,
+    @Query() query: NoteVisibilityQueryInput,
   ): Promise<NoteResponse> {
     const parsedParams = parseWithZod(noteIdParamSchema, params);
+    const parsedQuery = parseWithZod(noteVisibilityQuerySchema, query);
 
-    return this.notesService.getNoteById(parsedParams.id);
+    return this.notesService.getNoteById(parsedParams.id, {
+      includeDeleted: parsedQuery.includeDeleted ?? false,
+    });
   }
 
   @Patch(':id')
@@ -75,6 +81,15 @@ export class NotesController {
     const parsedParams = parseWithZod(noteIdParamSchema, params);
 
     return this.notesService.deleteNote(parsedParams.id);
+  }
+
+  @Post(':id/restore')
+  async restoreNote(
+    @Param() params: NoteIdParamsInput,
+  ): Promise<NoteResponse> {
+    const parsedParams = parseWithZod(noteIdParamSchema, params);
+
+    return this.notesService.restoreNote(parsedParams.id);
   }
 
   @Post(':id/pin')

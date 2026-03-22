@@ -20,6 +20,7 @@ type NotesServiceMock = {
   getNoteById: ReturnType<typeof vi.fn>;
   updateNote: ReturnType<typeof vi.fn>;
   deleteNote: ReturnType<typeof vi.fn>;
+  restoreNote: ReturnType<typeof vi.fn>;
   pinNote: ReturnType<typeof vi.fn>;
   unpinNote: ReturnType<typeof vi.fn>;
 };
@@ -43,6 +44,7 @@ const createNotesServiceMock = (): NotesServiceMock => ({
   getNoteById: vi.fn(),
   updateNote: vi.fn(),
   deleteNote: vi.fn(),
+  restoreNote: vi.fn(),
   pinNote: vi.fn(),
   unpinNote: vi.fn(),
 });
@@ -126,9 +128,32 @@ describe('NotesController', () => {
 
       service.getNoteById.mockResolvedValue(note);
 
-      const result = await controller.getNoteById({ id: 'note_1' });
+      const result = await controller.getNoteById(
+        { id: 'note_1' },
+        {},
+      );
 
-      expect(service.getNoteById).toHaveBeenCalledWith('note_1');
+      expect(service.getNoteById).toHaveBeenCalledWith('note_1', {
+        includeDeleted: false,
+      });
+      expect(result).toEqual(note);
+    });
+
+    it('passes includeDeleted to NotesService.getNoteById when requested', async () => {
+      const note = createNoteResponse({
+        deletedAt: '2026-01-02T00:00:00.000Z',
+      });
+
+      service.getNoteById.mockResolvedValue(note);
+
+      const result = await controller.getNoteById(
+        { id: 'note_1' },
+        { includeDeleted: 'true' },
+      );
+
+      expect(service.getNoteById).toHaveBeenCalledWith('note_1', {
+        includeDeleted: true,
+      });
       expect(result).toEqual(note);
     });
 
@@ -138,7 +163,7 @@ describe('NotesController', () => {
       );
 
       await expect(
-        controller.getNoteById({ id: 'missing' }),
+        controller.getNoteById({ id: 'missing' }, {}),
       ).rejects.toBeInstanceOf(NotFoundException);
     });
   });
@@ -176,6 +201,21 @@ describe('NotesController', () => {
       const result = await controller.deleteNote({ id: 'note_1' });
 
       expect(service.deleteNote).toHaveBeenCalledWith('note_1');
+      expect(result).toEqual(note);
+    });
+  });
+
+  describe('restoreNote', () => {
+    it('calls NotesService.restoreNote with parsed params', async () => {
+      const note = createNoteResponse({
+        deletedAt: null,
+      });
+
+      service.restoreNote.mockResolvedValue(note);
+
+      const result = await controller.restoreNote({ id: 'note_1' });
+
+      expect(service.restoreNote).toHaveBeenCalledWith('note_1');
       expect(result).toEqual(note);
     });
   });

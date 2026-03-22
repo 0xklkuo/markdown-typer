@@ -12,6 +12,7 @@ type NotesPageShellProps = {
   notes: Note[];
   selectedNoteId?: string;
   searchQuery?: string;
+  includeDeleted?: boolean;
   content: ReactNode;
 };
 
@@ -19,6 +20,7 @@ export const NotesPageShell = ({
   notes,
   selectedNoteId,
   searchQuery,
+  includeDeleted,
   content,
 }: NotesPageShellProps): React.ReactElement => {
   return (
@@ -48,6 +50,7 @@ export const NotesPageShell = ({
             notes={notes}
             selectedNoteId={selectedNoteId}
             searchQuery={searchQuery}
+            includeDeleted={includeDeleted}
           />
         </div>
       }

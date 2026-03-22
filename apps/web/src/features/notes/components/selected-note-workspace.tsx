@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
-import { deleteNote, pinNote, unpinNote } from '../api/notes-api';
+import { deleteNote, pinNote, restoreNote, unpinNote } from '../api/notes-api';
 import { sortNotes } from '../lib/sort-notes';
 import { Note } from '../types/note';
 import { NoteEditor } from './note-editor';
@@ -13,12 +13,14 @@ type SelectedNoteWorkspaceProps = {
   initialNotes: Note[];
   initialNote: Note;
   searchQuery?: string;
+  includeDeleted?: boolean;
 };
 
 export const SelectedNoteWorkspace = ({
   initialNotes,
   initialNote,
   searchQuery,
+  includeDeleted,
 }: SelectedNoteWorkspaceProps): React.ReactElement => {
   const router = useRouter();
 
@@ -26,6 +28,7 @@ export const SelectedNoteWorkspace = ({
   const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
   const [isPinning, setIsPinning] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
   const [actionErrorMessage, setActionErrorMessage] = useState<string | null>(
     null,
   );
@@ -89,10 +92,17 @@ export const SelectedNoteWorkspace = ({
         currentNotes.filter((note) => note.id !== selectedNote.id),
       );
 
-      const nextUrl =
-        searchQuery?.trim()
-          ? `/notes?q=${encodeURIComponent(searchQuery.trim())}`
-          : '/notes';
+      const params = new URLSearchParams();
+
+      if (searchQuery?.trim()) {
+        params.set('q', searchQuery.trim());
+      }
+
+      if (includeDeleted) {
+        params.set('includeDeleted', 'true');
+      }
+
+      const nextUrl = params.toString() ? `/notes?${params.toString()}` : '/notes';
 
       router.push(nextUrl);
       router.refresh();
@@ -102,21 +112,41 @@ export const SelectedNoteWorkspace = ({
       );
       setIsDeleting(false);
     }
-  }, [router, searchQuery, selectedNote.id]);
+  }, [includeDeleted, router, searchQuery, selectedNote.id]);
+
+  const handleRestore = useCallback(async (): Promise<void> => {
+    setIsRestoring(true);
+    setActionErrorMessage(null);
+
+    try {
+      const updatedNote = await restoreNote(selectedNote.id);
+
+      syncUpdatedNote(updatedNote);
+    } catch (error: unknown) {
+      setActionErrorMessage(
+        error instanceof Error ? error.message : 'Failed to restore note.',
+      );
+    } finally {
+      setIsRestoring(false);
+    }
+  }, [selectedNote.id, syncUpdatedNote]);
 
   return (
     <NotesPageShell
       notes={notes}
       selectedNoteId={selectedNote.id}
       searchQuery={searchQuery}
+      includeDeleted={includeDeleted}
       content={
         <NoteEditor
           note={selectedNote}
           onNoteSaved={handleNoteSaved}
           onTogglePin={handleTogglePin}
           onDelete={handleDelete}
+          onRestore={handleRestore}
           isPinning={isPinning}
           isDeleting={isDeleting}
+          isRestoring={isRestoring}
           actionErrorMessage={actionErrorMessage}
         />
       }

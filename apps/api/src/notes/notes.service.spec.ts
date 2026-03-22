@@ -217,6 +217,29 @@ describe('NotesService', () => {
         NotFoundException,
       );
     });
+
+    it('can return a deleted note when includeDeleted is true', async () => {
+      const note = createMockNote({
+        id: 'note_deleted',
+        title: 'Deleted Note',
+        deletedAt: new Date('2026-01-03T00:00:00.000Z'),
+      });
+
+      prisma.note.findFirst.mockResolvedValue(note);
+
+      const result = await service.getNoteById('note_deleted', {
+        includeDeleted: true,
+      });
+
+      expect(prisma.note.findFirst).toHaveBeenCalledWith({
+        where: {
+          id: 'note_deleted',
+          userId: defaultUser.id,
+        },
+      });
+
+      expect(result.deletedAt).toBe(note.deletedAt?.toISOString() ?? null);
+    });
   });
 
   describe('updateNote', () => {
@@ -278,6 +301,41 @@ describe('NotesService', () => {
       });
 
       expect(result.deletedAt).toBe(deletedAt.toISOString());
+    });
+  });
+
+  describe('restoreNote', () => {
+    it('restores a deleted note by setting deletedAt to null', async () => {
+      const deletedNote = createMockNote({
+        id: 'note_1',
+        deletedAt: new Date('2026-01-02T00:00:00.000Z'),
+      });
+
+      const restoredNote = createMockNote({
+        id: 'note_1',
+        deletedAt: null,
+      });
+
+      prisma.note.findFirst.mockResolvedValue(deletedNote);
+      prisma.note.update.mockResolvedValue(restoredNote);
+
+      const result = await service.restoreNote('note_1');
+
+      expect(prisma.note.findFirst).toHaveBeenCalledWith({
+        where: {
+          id: 'note_1',
+          userId: defaultUser.id,
+        },
+      });
+
+      expect(prisma.note.update).toHaveBeenCalledWith({
+        where: { id: 'note_1' },
+        data: {
+          deletedAt: null,
+        },
+      });
+
+      expect(result.deletedAt).toBeNull();
     });
   });
 

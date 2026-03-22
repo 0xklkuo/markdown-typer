@@ -11,6 +11,10 @@ type ListNotesOptions = {
   includeDeleted?: boolean;
 };
 
+type GetNoteOptions = {
+  includeDeleted?: boolean;
+};
+
 @Injectable()
 export class NotesService {
   constructor(private readonly prisma: PrismaService) { }
@@ -63,8 +67,11 @@ export class NotesService {
     return notes.map(this.toNoteResponse);
   }
 
-  async getNoteById(id: string): Promise<NoteResponse> {
-    const note = await this.requireActiveNote(id);
+  async getNoteById(
+    id: string,
+    options?: GetNoteOptions,
+  ): Promise<NoteResponse> {
+    const note = await this.requireNote(id, options?.includeDeleted ?? false);
 
     return this.toNoteResponse(note);
   }
@@ -94,6 +101,19 @@ export class NotesService {
     });
 
     return this.toNoteResponse(deletedNote);
+  }
+
+  async restoreNote(id: string): Promise<NoteResponse> {
+    const note = await this.requireNote(id, true);
+
+    const restoredNote = await this.prisma.note.update({
+      where: { id: note.id },
+      data: {
+        deletedAt: null,
+      },
+    });
+
+    return this.toNoteResponse(restoredNote);
   }
 
   async pinNote(id: string): Promise<NoteResponse> {
@@ -136,14 +156,17 @@ export class NotesService {
     return user;
   }
 
-  private async requireActiveNote(id: string): Promise<Note> {
+  private async requireNote(
+    id: string,
+    includeDeleted: boolean,
+  ): Promise<Note> {
     const user = await this.getDefaultUser();
 
     const note = await this.prisma.note.findFirst({
       where: {
         id,
         userId: user.id,
-        deletedAt: null,
+        ...(includeDeleted ? {} : { deletedAt: null }),
       },
     });
 
@@ -152,6 +175,10 @@ export class NotesService {
     }
 
     return note;
+  }
+
+  private async requireActiveNote(id: string): Promise<Note> {
+    return this.requireNote(id, false);
   }
 
   private readonly toNoteResponse = (note: Note): NoteResponse => ({

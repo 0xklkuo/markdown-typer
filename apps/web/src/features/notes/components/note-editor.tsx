@@ -14,8 +14,10 @@ type NoteEditorProps = {
   onNoteSaved?: (note: Note) => void;
   onTogglePin?: () => Promise<void>;
   onDelete?: () => Promise<void>;
+  onRestore?: () => Promise<void>;
   isPinning?: boolean;
   isDeleting?: boolean;
+  isRestoring?: boolean;
   actionErrorMessage?: string | null;
 };
 
@@ -24,8 +26,10 @@ export const NoteEditor = ({
   onNoteSaved,
   onTogglePin,
   onDelete,
+  onRestore,
   isPinning = false,
   isDeleting = false,
+  isRestoring = false,
   actionErrorMessage = null,
 }: NoteEditorProps): React.ReactElement => {
   const [currentNote, setCurrentNote] = useState(note);
@@ -48,8 +52,13 @@ export const NoteEditor = ({
   }, [note]);
 
   const hasUnsavedChanges = content !== latestSavedContentRef.current;
+  const isDeleted = currentNote.deletedAt !== null;
 
   useEffect(() => {
+    if (isDeleted) {
+      return;
+    }
+
     if (debouncedContent === latestSavedContentRef.current) {
       return;
     }
@@ -81,18 +90,27 @@ export const NoteEditor = ({
           error instanceof Error ? error.message : 'Failed to save note.',
         );
       });
-  }, [currentNote.id, debouncedContent, onNoteSaved]);
+  }, [currentNote.id, debouncedContent, isDeleted, onNoteSaved]);
 
-  const statusText =
-    saveState === 'saving'
-      ? 'Saving...'
-      : saveState === 'saved'
-        ? 'Saved'
-        : saveState === 'error'
-          ? 'Save failed'
-          : hasUnsavedChanges
-            ? 'Unsaved changes'
-            : 'Ready';
+  const getStatusText = (): string => {
+    if (isDeleted) {
+      return 'Deleted';
+    }
+
+    switch (saveState) {
+      case 'saving':
+        return 'Saving...';
+      case 'saved':
+        return 'Saved';
+      case 'error':
+        return 'Save failed';
+      case 'idle':
+      default:
+        return hasUnsavedChanges ? 'Unsaved changes' : 'Ready';
+    }
+  };
+
+  const statusText = getStatusText();
 
   return (
     <section className="flex min-h-[500px] flex-col rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -109,33 +127,48 @@ export const NoteEditor = ({
         <div className="flex items-center gap-2">
           <div className="text-xs text-slate-500">{statusText}</div>
 
-          <button
-            type="button"
-            onClick={() => {
-              void onTogglePin?.();
-            }}
-            disabled={isPinning || isDeleting}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isPinning
-              ? currentNote.isPinned
-                ? 'Unpinning...'
-                : 'Pinning...'
-              : currentNote.isPinned
-                ? 'Unpin'
-                : 'Pin'}
-          </button>
+          {isDeleted ? (
+            <button
+              type="button"
+              onClick={() => {
+                void onRestore?.();
+              }}
+              disabled={isRestoring}
+              className="rounded-md border border-emerald-300 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isRestoring ? 'Restoring...' : 'Restore'}
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  void onTogglePin?.();
+                }}
+                disabled={isPinning || isDeleting}
+                className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isPinning
+                  ? currentNote.isPinned
+                    ? 'Unpinning...'
+                    : 'Pinning...'
+                  : currentNote.isPinned
+                    ? 'Unpin'
+                    : 'Pin'}
+              </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              void onDelete?.();
-            }}
-            disabled={isDeleting || isPinning}
-            className="rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isDeleting ? 'Deleting...' : 'Delete'}
-          </button>
+              <button
+                type="button"
+                onClick={() => {
+                  void onDelete?.();
+                }}
+                disabled={isDeleting || isPinning}
+                className="rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -143,8 +176,8 @@ export const NoteEditor = ({
         <textarea
           value={content}
           onChange={(event) => setContent(event.target.value)}
-          placeholder="Start writing..."
-          disabled={isDeleting}
+          placeholder={isDeleted ? 'Restore this note to edit it.' : 'Start writing...'}
+          disabled={isDeleting || isDeleted || isRestoring}
           className="min-h-[420px] w-full resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 disabled:opacity-60"
           spellCheck={false}
         />
