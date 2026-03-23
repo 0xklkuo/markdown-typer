@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
+
 import { deleteNote, pinNote, restoreNote, unpinNote } from '../api/notes-api';
 import { sortNotes } from '../lib/sort-notes';
 import { Note } from '../types/note';
@@ -132,6 +134,19 @@ export const SelectedNoteWorkspace = ({
       setIsRestoring(false);
     }
   }, [selectedNote.id, syncUpdatedNote]);
+
+  useKeyboardShortcut({
+    key: 'p',
+    modKey: true,
+    shiftKey: true,
+    preventDefault: true,
+    allowInEditable: true,
+    enabled:
+      !selectedNote.deletedAt && !isPinning && !isDeleting && !isRestoring,
+    handler: () => {
+      void handleTogglePin();
+    },
+  });
 
   return (
     <NotesPageShell

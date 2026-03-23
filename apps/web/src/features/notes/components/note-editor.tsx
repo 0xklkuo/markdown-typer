@@ -146,6 +146,7 @@ export const NoteEditor = ({
                   void onTogglePin?.();
                 }}
                 disabled={isPinning || isDeleting}
+                title="Pin or unpin note (Ctrl/Cmd+Shift+P)"
                 className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isPinning

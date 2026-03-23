@@ -1,14 +1,16 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
+import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 
 export const NotesSearchForm = (): React.ReactElement => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [query, setQuery] = useState(searchParams.get('q') ?? '');
   const [includeDeleted, setIncludeDeleted] = useState(
@@ -44,13 +46,34 @@ export const NotesSearchForm = (): React.ReactElement => {
     router.replace(nextUrl);
   }, [debouncedQuery, includeDeleted, pathname, router, searchParams]);
 
+  useKeyboardShortcut({
+    key: '/',
+    preventDefault: true,
+    handler: () => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    },
+  });
+
+  useKeyboardShortcut({
+    key: 'escape',
+    allowInEditable: true,
+    handler: () => {
+      if (document.activeElement === inputRef.current) {
+        inputRef.current?.blur();
+      }
+    },
+  });
+
   return (
     <div className="space-y-3">
       <input
+        ref={inputRef}
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Search notes..."
+        title="Focus search (/)"
         className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-500"
       />
 
