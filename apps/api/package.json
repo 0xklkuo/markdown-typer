@@ -13,7 +13,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:seed": "prisma db seed",
-    "prisma:smoke": "exec tsx prisma/smoke.ts"
+    "prisma:smoke": "exec tsx prisma/smoke.ts",
+    "prisma:cleanup:e2e": "tsx prisma/cleanup-e2e.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.16",
