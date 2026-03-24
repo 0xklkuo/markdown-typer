@@ -192,6 +192,7 @@ See:
 
 - [`docs/architecture.md`](./docs/architecture.md)
 - [`docs/roadmap.md`](./docs/roadmap.md)
+- [`docs/publish-checklist.md`](./docs/publish-checklist.md)
 
 ## Contributing
 

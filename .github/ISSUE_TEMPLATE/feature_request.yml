@@ -1,0 +1,54 @@
+name: Feature request
+description: Propose a focused improvement aligned with the project’s educational goals
+title: '[Feature]: '
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement.
+
+        This project prioritizes:
+        - learning value
+        - clarity
+        - minimalism
+        - maintainability
+
+        Please keep proposals focused and explain why they improve the project without significantly increasing complexity.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: What problem would this feature solve?
+      placeholder: Describe the current gap or pain point.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What change would you like to see?
+      placeholder: Describe the feature as simply as possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you considered any simpler alternatives?
+      placeholder: Describe possible alternatives or tradeoffs.
+    validations:
+      required: false
+
+  - type: textarea
+    id: educational-value
+    attributes:
+      label: Educational value
+      description: How would this improve the repository as a learning resource?
+      placeholder: Explain why this feature fits the project’s purpose.
+    validations:
+      required: false
