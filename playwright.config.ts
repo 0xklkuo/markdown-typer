@@ -14,13 +14,13 @@ export default defineConfig({
       command: 'pnpm --filter @markdown-typer/api dev',
       url: 'http://localhost:3210/api/health',
       reuseExistingServer: !process.env.CI,
-      timeout: 30_000,
+      timeout: 60_000,
     },
     {
       command: 'pnpm --filter @markdown-typer/web dev',
       url: 'http://localhost:3000/notes',
       reuseExistingServer: !process.env.CI,
-      timeout: 30_000,
+      timeout: 60_000,
     },
   ],
   projects: [

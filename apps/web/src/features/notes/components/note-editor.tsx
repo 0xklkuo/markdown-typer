@@ -6,7 +6,9 @@ import { useDebouncedValue } from '@/hooks/use-debounced-value';
 
 import { updateNote } from '../api/notes-api';
 import { Note } from '../types/note';
+import { MarkdownPreview } from './markdown-preview';
 
+type EditorMode = 'edit' | 'preview';
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
 type NoteEditorProps = {
@@ -34,6 +36,7 @@ export const NoteEditor = ({
 }: NoteEditorProps): React.ReactElement => {
   const [currentNote, setCurrentNote] = useState(note);
   const [content, setContent] = useState(note.content);
+  const [mode, setMode] = useState<EditorMode>('edit');
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
 
@@ -45,6 +48,7 @@ export const NoteEditor = ({
   useEffect(() => {
     setCurrentNote(note);
     setContent(note.content);
+    setMode('edit');
     setSaveState('idle');
     setSaveErrorMessage(null);
     latestSavedContentRef.current = note.content;
@@ -125,6 +129,34 @@ export const NoteEditor = ({
         </div>
 
         <div className="flex items-center gap-2">
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-1">
+            <button
+              type="button"
+              onClick={() => setMode('edit')}
+              className={[
+                'rounded px-2.5 py-1 text-xs font-medium transition',
+                mode === 'edit'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700',
+              ].join(' ')}
+            >
+              Edit
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMode('preview')}
+              className={[
+                'rounded px-2.5 py-1 text-xs font-medium transition',
+                mode === 'preview'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700',
+              ].join(' ')}
+            >
+              Preview
+            </button>
+          </div>
+
           <div className="text-xs text-slate-500">{statusText}</div>
 
           {isDeleted ? (
@@ -174,16 +206,22 @@ export const NoteEditor = ({
       </header>
 
       <div className="flex-1 px-6 py-4">
-        <textarea
-          value={content}
-          onChange={(event) => setContent(event.target.value)}
-          placeholder={
-            isDeleted ? 'Restore this note to edit it.' : 'Start writing...'
-          }
-          disabled={isDeleting || isDeleted || isRestoring}
-          className="min-h-[420px] w-full resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 disabled:opacity-60"
-          spellCheck={false}
-        />
+        {mode === 'edit' ? (
+          <textarea
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+            placeholder={
+              isDeleted ? 'Restore this note to edit it.' : 'Start writing...'
+            }
+            disabled={isDeleting || isDeleted || isRestoring}
+            className="min-h-[420px] w-full resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 disabled:opacity-60"
+            spellCheck={false}
+          />
+        ) : (
+          <div className="min-h-[420px]">
+            <MarkdownPreview content={content} />
+          </div>
+        )}
       </div>
 
       {saveErrorMessage || actionErrorMessage ? (
