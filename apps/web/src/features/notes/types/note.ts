@@ -1,9 +1,6 @@
-export type Note = {
-  id: string;
-  title: string;
-  content: string;
-  isPinned: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
+export type {
+  GetNoteByIdOptions,
+  ListNotesQuery,
+  Note,
+  NoteInput,
+} from '@markdown-typer/shared-types';

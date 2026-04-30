@@ -54,6 +54,7 @@ This repository is designed to help developers practice and understand:
 ## Current Features
 
 ### Notes
+
 - create note
 - browse notes
 - search notes
@@ -66,6 +67,7 @@ This repository is designed to help developers practice and understand:
 - basic keyboard shortcuts
 
 ### UX
+
 - route-based note selection
 - persistent search query while browsing
 - deleted-note visibility toggle
@@ -73,6 +75,7 @@ This repository is designed to help developers practice and understand:
 - lightweight editor-first workflow
 
 ### Quality
+
 - backend unit/controller/service tests
 - frontend component smoke tests
 - one happy-path Playwright e2e test
@@ -84,17 +87,20 @@ This repository is designed to help developers practice and understand:
 ## Tech Stack
 
 ### Backend
+
 - [NestJS](https://nestjs.com/)
 - [Prisma ORM](https://www.prisma.io/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Zod](https://zod.dev/)
 
 ### Frontend
+
 - [Next.js](https://nextjs.org/)
 - [React](https://react.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 
 ### Tooling
+
 - [pnpm workspace](https://pnpm.io/workspaces)
 - [TypeScript](https://www.typescriptlang.org/)
 - [ESLint](https://eslint.org/)
@@ -114,6 +120,7 @@ apps/
 packages/
   config-eslint/        # shared ESLint config
   config-typescript/    # shared TypeScript config
+  shared-types/         # shared domain and API types
 
 docs/
   architecture.md
@@ -146,6 +153,7 @@ Key design choices:
 - **plain textarea editing**
 - **minimal markdown preview**
 - **no auth / sync / desktop complexity yet**
+- **shared domain and API types package for future clients**
 
 For more detail, see:
 
@@ -206,6 +214,7 @@ pnpm dev
 ## Environment Variables
 
 ### API (`apps/api/.env`)
+
 Example:
 
 ```env
@@ -217,6 +226,7 @@ WEB_APP_ORIGIN=http://localhost:3000
 ```
 
 ### Web (`apps/web/.env.local`)
+
 Example:
 
 ```env
@@ -263,17 +273,23 @@ pnpm --filter @markdown-typer/web test
 ## Testing
 
 ### Backend
+
 Includes:
+
 - utility tests
 - controller tests
 - service tests
 
 ### Frontend
+
 Includes:
+
 - component smoke tests
 
 ### End-to-End
+
 Includes:
+
 - one happy-path Playwright test:
   - create note
   - edit note
@@ -307,6 +323,7 @@ This is intentionally limited to keep the UX simple and avoid browser conflicts.
 The app includes a lightweight **Edit / Preview** toggle.
 
 It is intentionally minimal:
+
 - no syntax highlighting yet
 - no rich text editing
 - no complex markdown plugin stack
@@ -362,6 +379,7 @@ Before contributing, please read:
 - [`CONTRIBUTING.md`](./CONTRIBUTING.md)
 
 Please keep changes:
+
 - focused
 - minimal
 - well-tested
@@ -391,6 +409,7 @@ These are deliberate tradeoffs for simplicity and learning value.
 This repository is currently suitable as an **educational MVP** and reference project.
 
 It is intended to be:
+
 - useful to study
 - easy to run locally
 - approachable to contributors

@@ -26,8 +26,8 @@ export const NotesPageShell = ({
   return (
     <NotesLayout
       sidebar={
-        <div className="space-y-4">
-          <div className="flex items-center justify-between gap-3">
+        <div className="space-y-4 lg:sticky lg:top-6">
+          <div className="flex items-start justify-between gap-3">
             <div>
               <Link
                 href="/notes"
@@ -41,17 +41,21 @@ export const NotesPageShell = ({
               </p>
             </div>
 
-            <CreateNoteButton createNoteAction={createNoteAction} />
+            <div className="shrink-0">
+              <CreateNoteButton createNoteAction={createNoteAction} />
+            </div>
           </div>
 
           <NotesSearchForm />
 
-          <NotesList
-            notes={notes}
-            selectedNoteId={selectedNoteId}
-            searchQuery={searchQuery}
-            includeDeleted={includeDeleted}
-          />
+          <div className="pb-1">
+            <NotesList
+              notes={notes}
+              selectedNoteId={selectedNoteId}
+              searchQuery={searchQuery}
+              includeDeleted={includeDeleted}
+            />
+          </div>
         </div>
       }
       content={content}

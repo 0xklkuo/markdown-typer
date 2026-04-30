@@ -1,14 +1,11 @@
-import { Note } from '../types/note';
+import type {
+  GetNoteByIdOptions,
+  ListNotesQuery,
+  Note,
+  NoteInput,
+} from '@markdown-typer/shared-types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-type NoteContentInput = {
-  content: string;
-};
-
-type NoteVisibilityOptions = {
-  includeDeleted?: boolean;
-};
 
 const getApiBaseUrl = (): string => {
   if (!API_BASE_URL) {
@@ -43,10 +40,7 @@ const parseJsonResponse = async <T>(response: Response): Promise<T> => {
   return response.json() as Promise<T>;
 };
 
-export const listNotes = async (query?: {
-  q?: string;
-  includeDeleted?: boolean;
-}): Promise<Note[]> => {
+export const listNotes = async (query?: ListNotesQuery): Promise<Note[]> => {
   const url = new URL(`${getApiBaseUrl()}/notes`);
 
   if (query?.q) {
@@ -66,7 +60,7 @@ export const listNotes = async (query?: {
 
 export const getNoteById = async (
   id: string,
-  options?: NoteVisibilityOptions,
+  options?: GetNoteByIdOptions,
 ): Promise<Note> => {
   const url = new URL(`${getApiBaseUrl()}/notes/${id}`);
 
@@ -81,7 +75,7 @@ export const getNoteById = async (
   return parseJsonResponse<Note>(response);
 };
 
-export const createNote = async (input: NoteContentInput): Promise<Note> => {
+export const createNote = async (input: NoteInput): Promise<Note> => {
   const response = await fetch(`${getApiBaseUrl()}/notes`, {
     method: 'POST',
     headers: {
@@ -96,7 +90,7 @@ export const createNote = async (input: NoteContentInput): Promise<Note> => {
 
 export const updateNote = async (
   id: string,
-  input: NoteContentInput,
+  input: NoteInput,
 ): Promise<Note> => {
   const response = await fetch(`${getApiBaseUrl()}/notes/${id}`, {
     method: 'PATCH',

@@ -117,24 +117,30 @@ export const NoteEditor = ({
   const statusText = getStatusText();
 
   return (
-    <section className="flex min-h-[500px] flex-col rounded-xl border border-slate-200 bg-white shadow-sm">
-      <header className="flex items-center justify-between gap-4 border-b border-slate-200 px-6 py-4">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">
-            {currentNote.title}
-          </h2>
-          <p className="mt-1 text-xs text-slate-500">
-            Updated {new Date(currentNote.updatedAt).toLocaleString()}
-          </p>
+    <section className="flex min-h-[calc(100dvh-2rem)] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:min-h-[calc(100dvh-3rem)]">
+      <header className="flex flex-col gap-4 border-b border-slate-200 px-4 py-4 sm:px-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-semibold text-slate-900 sm:text-xl">
+              {currentNote.title}
+            </h2>
+            <p className="mt-1 text-xs text-slate-500">
+              Updated {new Date(currentNote.updatedAt).toLocaleString()}
+            </p>
+          </div>
+
+          <div className="text-xs text-slate-500 sm:text-right">
+            {statusText}
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="rounded-md border border-slate-200 bg-slate-50 p-1">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="inline-flex w-full rounded-md border border-slate-200 bg-slate-50 p-1 sm:w-auto">
             <button
               type="button"
               onClick={() => setMode('edit')}
               className={[
-                'rounded px-2.5 py-1 text-xs font-medium transition',
+                'flex-1 rounded px-3 py-2 text-xs font-medium transition sm:flex-none',
                 mode === 'edit'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700',
@@ -147,7 +153,7 @@ export const NoteEditor = ({
               type="button"
               onClick={() => setMode('preview')}
               className={[
-                'rounded px-2.5 py-1 text-xs font-medium transition',
+                'flex-1 rounded px-3 py-2 text-xs font-medium transition sm:flex-none',
                 mode === 'preview'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-500 hover:text-slate-700',
@@ -157,8 +163,6 @@ export const NoteEditor = ({
             </button>
           </div>
 
-          <div className="text-xs text-slate-500">{statusText}</div>
-
           {isDeleted ? (
             <button
               type="button"
@@ -166,12 +170,12 @@ export const NoteEditor = ({
                 void onRestore?.();
               }}
               disabled={isRestoring}
-              className="rounded-md border border-emerald-300 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-md border border-emerald-300 px-3 py-2 text-xs font-medium text-emerald-700 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-3 sm:py-1.5"
             >
               {isRestoring ? 'Restoring...' : 'Restore'}
             </button>
           ) : (
-            <>
+            <div className="flex flex-col gap-2 sm:flex-row">
               <button
                 type="button"
                 onClick={() => {
@@ -179,7 +183,7 @@ export const NoteEditor = ({
                 }}
                 disabled={isPinning || isDeleting}
                 title="Pin or unpin note (Ctrl/Cmd+Shift+P)"
-                className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-1.5"
               >
                 {isPinning
                   ? currentNote.isPinned
@@ -196,16 +200,16 @@ export const NoteEditor = ({
                   void onDelete?.();
                 }}
                 disabled={isDeleting || isPinning}
-                className="rounded-md border border-red-300 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-md border border-red-300 px-3 py-2 text-xs font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-1.5"
               >
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
-            </>
+            </div>
           )}
         </div>
       </header>
 
-      <div className="flex-1 px-6 py-4">
+      <div className="flex min-h-0 flex-1 px-4 py-4 sm:px-6">
         {mode === 'edit' ? (
           <textarea
             value={content}
@@ -214,18 +218,18 @@ export const NoteEditor = ({
               isDeleted ? 'Restore this note to edit it.' : 'Start writing...'
             }
             disabled={isDeleting || isDeleted || isRestoring}
-            className="min-h-[420px] w-full resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 disabled:opacity-60"
+            className="min-h-[50dvh] w-full flex-1 resize-none border-0 bg-transparent text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-400 disabled:opacity-60 sm:min-h-0"
             spellCheck={false}
           />
         ) : (
-          <div className="min-h-[420px]">
+          <div className="min-h-[50dvh] w-full flex-1 overflow-y-auto sm:min-h-0">
             <MarkdownPreview content={content} />
           </div>
         )}
       </div>
 
       {saveErrorMessage || actionErrorMessage ? (
-        <div className="border-t border-red-200 bg-red-50 px-6 py-3 text-sm text-red-700">
+        <div className="border-t border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">
           {actionErrorMessage ?? saveErrorMessage}
         </div>
       ) : null}

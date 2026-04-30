@@ -17,7 +17,7 @@ export const MarkdownPreview = ({
   }
 
   return (
-    <div className="markdown-preview">
+    <div className="prose prose-slate max-w-none">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
     </div>
   );
