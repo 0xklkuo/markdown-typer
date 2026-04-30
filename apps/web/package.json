@@ -12,6 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@markdown-typer/shared-notes": "workspace:*",
     "@markdown-typer/shared-types": "workspace:*",
     "next": "^15.2.2",
     "react": "^19.0.0",

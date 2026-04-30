@@ -1,3 +1,4 @@
+import { buildListNotesSearchParams } from '@markdown-typer/shared-notes';
 import type {
   GetNoteByIdOptions,
   ListNotesQuery,
@@ -42,14 +43,7 @@ const parseJsonResponse = async <T>(response: Response): Promise<T> => {
 
 export const listNotes = async (query?: ListNotesQuery): Promise<Note[]> => {
   const url = new URL(`${getApiBaseUrl()}/notes`);
-
-  if (query?.q) {
-    url.searchParams.set('q', query.q);
-  }
-
-  if (query?.includeDeleted) {
-    url.searchParams.set('includeDeleted', 'true');
-  }
+  url.search = buildListNotesSearchParams(query).toString();
 
   const response = await fetch(url.toString(), {
     cache: 'no-store',

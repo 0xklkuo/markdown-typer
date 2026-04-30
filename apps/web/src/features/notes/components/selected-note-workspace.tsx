@@ -5,8 +5,9 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 
+import { sortNotes, upsertSortedNote } from '@markdown-typer/shared-notes';
+
 import { deleteNote, pinNote, restoreNote, unpinNote } from '../api/notes-api';
-import { sortNotes } from '../lib/sort-notes';
 import { Note } from '../types/note';
 import { NoteEditor } from './note-editor';
 import { NotesPageShell } from './notes-page-shell';
@@ -46,15 +47,7 @@ export const SelectedNoteWorkspace = ({
   const syncUpdatedNote = useCallback((updatedNote: Note): void => {
     setSelectedNote(updatedNote);
 
-    setNotes((currentNotes) => {
-      const nextNotes = currentNotes.some((note) => note.id === updatedNote.id)
-        ? currentNotes.map((note) =>
-            note.id === updatedNote.id ? updatedNote : note,
-          )
-        : [updatedNote, ...currentNotes];
-
-      return sortNotes(nextNotes);
-    });
+    setNotes((currentNotes) => upsertSortedNote(currentNotes, updatedNote));
   }, []);
 
   const handleNoteSaved = useCallback(

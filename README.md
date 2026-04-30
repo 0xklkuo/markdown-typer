@@ -121,6 +121,7 @@ packages/
   config-eslint/        # shared ESLint config
   config-typescript/    # shared TypeScript config
   shared-types/         # shared domain and API types
+  shared-notes/         # shared pure note utilities
 
 docs/
   architecture.md

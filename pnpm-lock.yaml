@@ -87,6 +87,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@markdown-typer/shared-notes':
+        specifier: workspace:*
+        version: link:../../packages/shared-notes
       '@markdown-typer/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
@@ -165,6 +168,25 @@ importers:
         version: 8.57.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
 
   packages/config-typescript: {}
+
+  packages/shared-notes:
+    dependencies:
+      '@markdown-typer/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+    devDependencies:
+      '@types/node':
+        specifier: ^22.13.10
+        version: 22.19.15
+      eslint:
+        specifier: ^9.22.0
+        version: 9.39.4(jiti@2.6.1)
+      typescript:
+        specifier: ^5.8.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@22.19.15)(jiti@2.6.1)(jsdom@26.1.0)(terser@5.46.0)(tsx@4.21.0)
 
   packages/shared-types:
     devDependencies:
