@@ -98,6 +98,7 @@ This repository is designed to help developers practice and understand:
 - [Next.js](https://nextjs.org/)
 - [React](https://react.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
+- [Electron](https://www.electronjs.org/)
 
 ### Tooling
 
@@ -116,6 +117,7 @@ This repository is designed to help developers practice and understand:
 apps/
   api/                  # NestJS backend
   web/                  # Next.js frontend
+  desktop/              # Electron desktop shell
 
 packages/
   config-eslint/        # shared ESLint config
@@ -209,6 +211,7 @@ pnpm dev
 - Web: `http://localhost:3000`
 - API: `http://localhost:3210/api`
 - API health: `http://localhost:3210/api/health`
+- Desktop shell: loads the local web app at `http://localhost:3000`
 
 ---
 
@@ -267,6 +270,14 @@ pnpm --filter @markdown-typer/api prisma:seed
 ```bash
 pnpm --filter @markdown-typer/web dev
 pnpm --filter @markdown-typer/web test
+```
+
+### Desktop
+
+```bash
+pnpm dev:desktop
+pnpm desktop:build
+pnpm desktop:start
 ```
 
 ---
