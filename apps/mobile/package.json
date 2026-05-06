@@ -1,0 +1,30 @@
+{
+  "name": "@markdown-typer/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "ns build ios --no-hmr",
+    "dev": "ns run ios --simulator --no-hmr",
+    "doctor": "ns doctor ios",
+    "check": "pnpm lint && pnpm typecheck",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@markdown-typer/shared-notes": "workspace:*",
+    "@markdown-typer/shared-types": "workspace:*",
+    "@nativescript/core": "^9.0.18",
+    "@nativescript/ios": "^9.0.3",
+    "@valor/nativescript-websockets": "^1.0.1",
+    "source-map-js": "^1.2.1"
+  },
+  "devDependencies": {
+    "@nativescript/types": "^9.0.0",
+    "@nativescript/vite": "^2.0.3",
+    "@types/node": "^22.13.10",
+    "eslint": "^9.22.0",
+    "typescript": "^5.8.2",
+    "vite": "^7.3.0"
+  }
+}

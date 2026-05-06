@@ -251,6 +251,11 @@ The first mobile milestone should target a minimal viable feature set:
 - create a note
 - preview markdown in a simple way
 
+The mobile workflow should also distinguish between:
+
+- code-level validation that can run without native Apple tooling
+- native iOS execution that requires a local Xcode-based environment
+
 Other features such as pin, delete, restore, and richer navigation can follow after the basic flow is stable.
 
 ### Mobile Boundaries
@@ -263,6 +268,12 @@ The mobile app should not initially include:
 - advanced local caching
 - complex navigation abstractions
 - platform-specific features that are not needed for the core note workflow
+
+The mobile development workflow should also remain explicit:
+
+- `mobile:check` is for linting and type-checking the NativeScript codebase
+- `mobile:doctor` is for validating local NativeScript environment setup
+- `dev:mobile` is for actual iOS runtime development and should be expected to fail without Xcode and related tools
 
 ---
 

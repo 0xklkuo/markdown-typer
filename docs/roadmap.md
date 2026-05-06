@@ -172,12 +172,14 @@ Planned work:
 - keep mobile UI native to the platform instead of forcing web UI reuse
 - implement a minimal note list and note detail flow
 - document local development workflow for mobile support
+- distinguish code validation scripts from native iOS runtime scripts
 
 Expected result:
 
 - the repository demonstrates how one backend can support multiple client types
 - mobile support remains intentionally narrow and educational
 - shared logic is reused where it helps, not where it harms clarity
+- contributors can tell whether a failure is caused by app code or missing Apple tooling
 
 Initial scope:
 

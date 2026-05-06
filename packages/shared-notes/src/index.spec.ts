@@ -4,6 +4,7 @@ import type { Note } from '@markdown-typer/shared-types';
 
 import {
   buildListNotesSearchParams,
+  deriveTitleFromContent,
   sortNotes,
   upsertSortedNote,
 } from './index';
@@ -16,6 +17,28 @@ const createNote = (overrides: Partial<Note>): Note => ({
   createdAt: overrides.createdAt ?? '2026-01-01T00:00:00.000Z',
   updatedAt: overrides.updatedAt ?? '2026-01-01T00:00:00.000Z',
   deletedAt: overrides.deletedAt ?? null,
+});
+
+describe('deriveTitleFromContent', () => {
+  it('returns the first non-empty line as the title', () => {
+    expect(deriveTitleFromContent('\n\nWeekly Planning\n- ship MVP')).toBe(
+      'Weekly Planning',
+    );
+  });
+
+  it('strips markdown heading prefixes from the title line', () => {
+    expect(deriveTitleFromContent('# Weekly Planning\n- ship MVP')).toBe(
+      'Weekly Planning',
+    );
+  });
+
+  it('returns Untitled for empty content', () => {
+    expect(deriveTitleFromContent('')).toBe('Untitled');
+  });
+
+  it('truncates long titles to the maximum supported length', () => {
+    expect(deriveTitleFromContent('A'.repeat(200))).toBe('A'.repeat(120));
+  });
 });
 
 describe('sortNotes', () => {

@@ -99,6 +99,7 @@ This repository is designed to help developers practice and understand:
 - [React](https://react.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Electron](https://www.electronjs.org/)
+- [NativeScript](https://nativescript.org/)
 
 ### Tooling
 
@@ -118,6 +119,7 @@ apps/
   api/                  # NestJS backend
   web/                  # Next.js frontend
   desktop/              # Electron desktop shell
+  mobile/               # NativeScript iOS client
 
 packages/
   config-eslint/        # shared ESLint config
@@ -172,6 +174,11 @@ For more detail, see:
 - **Node.js 22+**
 - **pnpm**
 - **PostgreSQL**
+
+Additional platform prerequisites:
+
+- **Desktop (Electron):** no extra platform tooling required for local development beyond the web stack
+- **Mobile (NativeScript iOS):** requires macOS with Xcode and related iOS tooling installed for native builds
 
 ### 1) Install dependencies
 
@@ -280,7 +287,45 @@ pnpm desktop:build
 pnpm desktop:start
 ```
 
+### Mobile
+
+```bash
+pnpm mobile:check
+pnpm mobile:doctor
+pnpm mobile:build
+pnpm dev:mobile
+```
+
 ---
+
+## Mobile Development Notes
+
+The mobile app is currently an **iOS-first NativeScript client**.
+
+Use these commands depending on what you need:
+
+- `pnpm mobile:check` — run mobile linting and TypeScript validation without requiring Xcode
+- `pnpm mobile:doctor` — inspect whether the NativeScript environment is configured correctly
+- `pnpm dev:mobile` — start the API and run the NativeScript iOS app locally
+- `pnpm mobile:build` — build the NativeScript iOS app
+
+### iOS prerequisites for local mobile runtime
+
+To run `pnpm dev:mobile` or `pnpm mobile:build`, your machine must have a working iOS toolchain.
+
+At minimum:
+
+1. install **Xcode**
+2. open Xcode once and complete first-run setup
+3. ensure Xcode command line tools are selected
+4. ensure **CocoaPods** is available
+5. verify the setup with `pnpm mobile:doctor`
+
+If the environment is incomplete, mobile code validation can still continue through `pnpm mobile:check`, but native iOS execution will fail.
+
+For NativeScript environment setup details, see:
+
+- <https://docs.nativescript.org/setup/macos#setting-up-macos-for-ios>
 
 ## Testing
 
@@ -406,8 +451,8 @@ Current intentional limitations include:
 - single-user local mode
 - no auth
 - no sync
-- no desktop app
-- no mobile app
+- desktop support is still intentionally thin
+- mobile support is currently iOS-first and depends on local Xcode setup for native runtime
 - no advanced markdown rendering
 - no dedicated trash page
 - one happy-path e2e instead of a large e2e suite

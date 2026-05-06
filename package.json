@@ -2,10 +2,11 @@
   "name": "markdown-typer",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@10.33.3",
   "scripts": {
     "dev": "pnpm --parallel --filter @markdown-typer/api --filter @markdown-typer/web dev",
     "dev:desktop": "pnpm --parallel --filter @markdown-typer/api --filter @markdown-typer/web --filter @markdown-typer/desktop dev",
+    "dev:mobile": "pnpm --parallel --filter @markdown-typer/api --filter @markdown-typer/mobile dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
@@ -17,6 +18,9 @@
     "test:web": "pnpm --filter @markdown-typer/web test",
     "desktop:build": "pnpm --filter @markdown-typer/desktop build",
     "desktop:start": "pnpm --filter @markdown-typer/desktop start",
+    "mobile:build": "pnpm --filter @markdown-typer/mobile build",
+    "mobile:check": "pnpm --filter @markdown-typer/mobile lint && pnpm --filter @markdown-typer/mobile typecheck",
+    "mobile:doctor": "pnpm --filter @markdown-typer/mobile exec ns doctor",
     "test:e2e": "playwright test"
   },
   "devDependencies": {

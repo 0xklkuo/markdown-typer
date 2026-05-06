@@ -1,0 +1,37 @@
+Page {
+  background-color: #f8fafc;
+}
+
+ActionBar {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+TextView {
+  min-height: 220;
+  padding: 12;
+  background-color: #ffffff;
+  border-width: 1;
+  border-color: #e2e8f0;
+  border-radius: 12;
+}
+
+ListView {
+  height: 260;
+  background-color: #ffffff;
+}
+
+.note-excerpt {
+  color: #64748b;
+  font-size: 12;
+  margin-top: 4;
+}
+
+.preview {
+  padding: 12;
+  background-color: #ffffff;
+  border-width: 1;
+  border-color: #e2e8f0;
+  border-radius: 12;
+  color: #0f172a;
+}
