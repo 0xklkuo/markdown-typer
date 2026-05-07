@@ -1,10 +1,6 @@
 import { Observable } from '@nativescript/core';
 
-import {
-  deriveTitleFromContent,
-  sortNotes,
-  upsertSortedNote,
-} from '@markdown-typer/shared-notes';
+import { sortNotes, upsertSortedNote } from '@markdown-typer/shared-notes';
 import type { Note } from '@markdown-typer/shared-types';
 
 import {
@@ -111,13 +107,12 @@ export class MainViewModel extends Observable {
     this.editorContent = content;
     this.previewContent = content;
     this.previewContentText = content || 'Nothing to preview yet.';
-    this.selectedTitle = deriveTitleFromContent(content);
     this.statusText =
       content === this.latestSavedContent ? 'Saved' : 'Unsaved changes';
 
     this.notifyPropertyChange('editorContent', this.editorContent);
     this.notifyPropertyChange('previewContent', this.previewContent);
-    this.notifyPropertyChange('selectedTitle', this.selectedTitle);
+    this.notifyPropertyChange('previewContentText', this.previewContentText);
     this.notifyPropertyChange('statusText', this.statusText);
 
     this.queueAutosave();
@@ -169,6 +164,7 @@ export class MainViewModel extends Observable {
     this.selectedNote = note;
     this.editorContent = note.content;
     this.previewContent = note.content;
+    this.previewContentText = note.content || 'Nothing to preview yet.';
     this.latestSavedContent = note.content;
     this.selectedTitle = note.title;
     this.statusText = 'Saved';
@@ -176,6 +172,7 @@ export class MainViewModel extends Observable {
     this.notifyPropertyChange('selectedNote', this.selectedNote);
     this.notifyPropertyChange('editorContent', this.editorContent);
     this.notifyPropertyChange('previewContent', this.previewContent);
+    this.notifyPropertyChange('previewContentText', this.previewContentText);
     this.notifyPropertyChange('selectedTitle', this.selectedTitle);
     this.notifyPropertyChange('statusText', this.statusText);
   }

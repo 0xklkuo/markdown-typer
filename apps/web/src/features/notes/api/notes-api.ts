@@ -1,10 +1,4 @@
-import { buildListNotesSearchParams } from '@markdown-typer/shared-notes';
-import type {
-  GetNoteByIdOptions,
-  ListNotesQuery,
-  Note,
-  NoteInput,
-} from '@markdown-typer/shared-types';
+import { createNotesClient } from '@markdown-typer/shared-notes';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -16,120 +10,20 @@ const getApiBaseUrl = (): string => {
   return API_BASE_URL;
 };
 
-const parseJsonResponse = async <T>(response: Response): Promise<T> => {
-  if (!response.ok) {
-    const fallbackMessage = `Request failed with status ${response.status}`;
-    let message = fallbackMessage;
-
-    try {
-      const errorBody = (await response.json()) as {
-        message?: string | string[];
-      };
-
-      if (typeof errorBody.message === 'string') {
-        message = errorBody.message;
-      } else if (Array.isArray(errorBody.message)) {
-        message = errorBody.message.join(', ');
-      }
-    } catch {
-      // Ignore JSON parsing failures and use fallback message.
-    }
-
-    throw new Error(message);
-  }
-
-  return response.json() as Promise<T>;
-};
-
-export const listNotes = async (query?: ListNotesQuery): Promise<Note[]> => {
-  const url = new URL(`${getApiBaseUrl()}/notes`);
-  url.search = buildListNotesSearchParams(query).toString();
-
-  const response = await fetch(url.toString(), {
+const notesClient = createNotesClient({
+  baseUrl: getApiBaseUrl(),
+  defaultInit: {
     cache: 'no-store',
-  });
+  },
+});
 
-  return parseJsonResponse<Note[]>(response);
-};
-
-export const getNoteById = async (
-  id: string,
-  options?: GetNoteByIdOptions,
-): Promise<Note> => {
-  const url = new URL(`${getApiBaseUrl()}/notes/${id}`);
-
-  if (options?.includeDeleted) {
-    url.searchParams.set('includeDeleted', 'true');
-  }
-
-  const response = await fetch(url.toString(), {
-    cache: 'no-store',
-  });
-
-  return parseJsonResponse<Note>(response);
-};
-
-export const createNote = async (input: NoteInput): Promise<Note> => {
-  const response = await fetch(`${getApiBaseUrl()}/notes`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store',
-    body: JSON.stringify(input),
-  });
-
-  return parseJsonResponse<Note>(response);
-};
-
-export const updateNote = async (
-  id: string,
-  input: NoteInput,
-): Promise<Note> => {
-  const response = await fetch(`${getApiBaseUrl()}/notes/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store',
-    body: JSON.stringify(input),
-  });
-
-  return parseJsonResponse<Note>(response);
-};
-
-export const pinNote = async (id: string): Promise<Note> => {
-  const response = await fetch(`${getApiBaseUrl()}/notes/${id}/pin`, {
-    method: 'POST',
-    cache: 'no-store',
-  });
-
-  return parseJsonResponse<Note>(response);
-};
-
-export const unpinNote = async (id: string): Promise<Note> => {
-  const response = await fetch(`${getApiBaseUrl()}/notes/${id}/unpin`, {
-    method: 'POST',
-    cache: 'no-store',
-  });
-
-  return parseJsonResponse<Note>(response);
-};
-
-export const deleteNote = async (id: string): Promise<Note> => {
-  const response = await fetch(`${getApiBaseUrl()}/notes/${id}`, {
-    method: 'DELETE',
-    cache: 'no-store',
-  });
-
-  return parseJsonResponse<Note>(response);
-};
-
-export const restoreNote = async (id: string): Promise<Note> => {
-  const response = await fetch(`${getApiBaseUrl()}/notes/${id}/restore`, {
-    method: 'POST',
-    cache: 'no-store',
-  });
-
-  return parseJsonResponse<Note>(response);
-};
+export const {
+  createNote,
+  deleteNote,
+  getNoteById,
+  listNotes,
+  pinNote,
+  restoreNote,
+  unpinNote,
+  updateNote,
+} = notesClient;

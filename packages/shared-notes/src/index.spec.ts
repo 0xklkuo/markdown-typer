@@ -1,10 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { Note } from '@markdown-typer/shared-types';
 
 import {
   buildListNotesSearchParams,
-  deriveTitleFromContent,
+  createNotesClient,
   sortNotes,
   upsertSortedNote,
 } from './index';
@@ -17,28 +17,6 @@ const createNote = (overrides: Partial<Note>): Note => ({
   createdAt: overrides.createdAt ?? '2026-01-01T00:00:00.000Z',
   updatedAt: overrides.updatedAt ?? '2026-01-01T00:00:00.000Z',
   deletedAt: overrides.deletedAt ?? null,
-});
-
-describe('deriveTitleFromContent', () => {
-  it('returns the first non-empty line as the title', () => {
-    expect(deriveTitleFromContent('\n\nWeekly Planning\n- ship MVP')).toBe(
-      'Weekly Planning',
-    );
-  });
-
-  it('strips markdown heading prefixes from the title line', () => {
-    expect(deriveTitleFromContent('# Weekly Planning\n- ship MVP')).toBe(
-      'Weekly Planning',
-    );
-  });
-
-  it('returns Untitled for empty content', () => {
-    expect(deriveTitleFromContent('')).toBe('Untitled');
-  });
-
-  it('truncates long titles to the maximum supported length', () => {
-    expect(deriveTitleFromContent('A'.repeat(200))).toBe('A'.repeat(120));
-  });
 });
 
 describe('sortNotes', () => {
@@ -125,5 +103,80 @@ describe('buildListNotesSearchParams', () => {
 
   it('returns empty params when query is empty', () => {
     expect(buildListNotesSearchParams({ q: '   ' }).toString()).toBe('');
+  });
+});
+
+describe('createNotesClient', () => {
+  it('lists notes with query params', async () => {
+    const fetchFn = vi.fn(
+      async () =>
+        new Response(JSON.stringify([createNote({ id: 'note_1' })]), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    );
+
+    const client = createNotesClient({
+      baseUrl: 'http://localhost:3210/api',
+      fetchFn: fetchFn as typeof fetch,
+    });
+
+    const result = await client.listNotes({
+      q: 'weekly',
+      includeDeleted: true,
+    });
+
+    expect(fetchFn).toHaveBeenCalledWith(
+      'http://localhost:3210/api/notes?q=weekly&includeDeleted=true',
+      expect.objectContaining({
+        headers: expect.any(Object),
+      }),
+    );
+    expect(result).toHaveLength(1);
+  });
+
+  it('creates a note with json headers', async () => {
+    const fetchFn = vi.fn(
+      async () =>
+        new Response(JSON.stringify(createNote({ id: 'note_2' })), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    );
+
+    const client = createNotesClient({
+      baseUrl: 'http://localhost:3210/api',
+      fetchFn: fetchFn as typeof fetch,
+    });
+
+    await client.createNote({ content: 'hello' });
+
+    expect(fetchFn).toHaveBeenCalledWith(
+      'http://localhost:3210/api/notes',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ content: 'hello' }),
+        headers: expect.objectContaining({
+          'Content-Type': 'application/json',
+        }),
+      }),
+    );
+  });
+
+  it('throws parsed error messages from failed responses', async () => {
+    const fetchFn = vi.fn(
+      async () =>
+        new Response(JSON.stringify({ message: 'Boom' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    );
+
+    const client = createNotesClient({
+      baseUrl: 'http://localhost:3210/api',
+      fetchFn: fetchFn as typeof fetch,
+    });
+
+    await expect(client.deleteNote('missing')).rejects.toThrow('Boom');
   });
 });
