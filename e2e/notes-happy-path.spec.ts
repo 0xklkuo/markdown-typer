@@ -59,7 +59,9 @@ test.describe('notes happy path', () => {
     await expect(editor).toHaveValue(noteContent);
 
     await expect(page.getByText('Saved')).toBeVisible();
-    await expect(heading).toHaveText(uniqueTitle);
+    await expect
+      .poll(async () => (await heading.textContent())?.trim() ?? '')
+      .toBe(uniqueTitle);
 
     const searchInput = page.getByRole('searchbox');
     await searchInput.fill(uniqueTitle);
