@@ -60,9 +60,7 @@ test.describe('notes happy path', () => {
 
     await expect(page.getByText('Saved')).toBeVisible();
     await expect
-      .poll(async () => (await heading.textContent())?.trim() ?? '', {
-        timeout: 15_000,
-      })
+      .poll(async () => (await heading.textContent())?.trim() ?? '')
       .toBe(uniqueTitle);
 
     const searchInput = page.getByRole('searchbox');

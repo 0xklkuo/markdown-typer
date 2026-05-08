@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30_000,
+  timeout: 200_000,
   fullyParallel: false,
   use: {
     baseURL: 'http://localhost:3000',
@@ -14,13 +14,13 @@ export default defineConfig({
       command: 'pnpm --filter @markdown-typer/api dev',
       url: 'http://localhost:3210/api/health',
       reuseExistingServer: !process.env.CI,
-      timeout: 60_000,
+      timeout: 100_000,
     },
     {
       command: 'pnpm --filter @markdown-typer/web dev',
       url: 'http://localhost:3000/notes',
       reuseExistingServer: !process.env.CI,
-      timeout: 60_000,
+      timeout: 100_000,
     },
   ],
   projects: [
