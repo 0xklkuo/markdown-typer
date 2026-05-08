@@ -8,6 +8,7 @@
     "dev:desktop": "pnpm --parallel --filter @markdown-typer/api --filter @markdown-typer/web --filter @markdown-typer/desktop dev",
     "dev:mobile": "pnpm --parallel --filter @markdown-typer/api --filter @markdown-typer/mobile dev",
     "build": "pnpm -r build",
+    "build:ci": "pnpm --filter @markdown-typer/api build && pnpm --filter @markdown-typer/web build && pnpm --filter @markdown-typer/desktop build && pnpm mobile:check",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "format": "prettier . --write",
