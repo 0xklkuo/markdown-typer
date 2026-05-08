@@ -22,17 +22,20 @@ The repository currently includes:
 
 - `apps/api` for the backend API
 - `apps/web` for the web client
+- `apps/desktop` as a thin Electron shell over the web client
+- `apps/mobile` as an iOS-first NativeScript client
 - shared tooling packages for TypeScript and ESLint
+- shared note-domain packages for contracts, utilities, and API client logic
 - PostgreSQL persistence through Prisma
 - a single-user local note-taking workflow
 
 The current product is intentionally simple:
 
 - create, browse, search, edit, pin, delete, and restore notes
-- preview markdown
+- web markdown preview
 - auto-save note content
 - use route-driven UI state
-- run backend, frontend, and basic end-to-end tests
+- run backend, shared package, frontend, and basic end-to-end tests
 
 ---
 
@@ -120,6 +123,8 @@ Examples:
 - persistence rules belong in the API
 - note title derivation rules should have one clear source of truth
 - clients may format and present data differently, but should not drift in core behavior
+
+At the current repository stage, title derivation is backend-owned and clients should consume the returned `note.title` instead of deriving titles locally.
 
 ### 4. Add complexity in layers
 
@@ -249,7 +254,7 @@ The first mobile milestone should target a minimal viable feature set:
 - open a note
 - edit note content
 - create a note
-- preview markdown in a simple way
+- keep the mobile flow native and simple
 
 The mobile workflow should also distinguish between:
 
@@ -268,6 +273,7 @@ The mobile app should not initially include:
 - advanced local caching
 - complex navigation abstractions
 - platform-specific features that are not needed for the core note workflow
+- mobile markdown preview until there is a clearly worthwhile implementation path
 
 The mobile development workflow should also remain explicit:
 
@@ -288,7 +294,7 @@ To support multiple clients, the next likely additions are small shared domain p
 
 ### Planned Shared Package Direction
 
-Possible packages include:
+Current shared note-domain packages include:
 
 - `packages/shared-types`
   - note DTOs
@@ -296,9 +302,10 @@ Possible packages include:
   - shared domain-facing TypeScript types
 
 - `packages/shared-notes`
-  - pure note utilities
   - note sorting helpers
-  - shared test fixtures for note domain behavior
+  - list-notes query param helpers
+  - reusable notes API client factory
+  - shared test coverage for note-domain behavior
 
 The exact package names may change during implementation. The important part is the boundary, not the naming.
 
@@ -470,6 +477,7 @@ Prefer minimal validation first:
 Prefer bounded tests first:
 
 - unit tests for mobile-specific pure logic
+- validation through linting, type-checking, and focused simulator runs
 - limited integration-style checks only where they clearly validate important behavior
 
 ### End-to-end
@@ -487,8 +495,8 @@ As the repository becomes multi-client, documentation must become more explicit.
 Documentation should clearly answer:
 
 - what exists today
-- what is planned
-- what is experimental
+- what is proven current support
+- what is experimental or intentionally limited
 - what is shared
 - what is client-specific
 - how to run each app locally
@@ -544,10 +552,9 @@ This document defines the Milestone 0 architecture outcomes:
 
 The following details are intentionally not locked down yet:
 
-- exact shared package names
 - exact Electron packaging strategy beyond local development
-- exact NativeScript project structure and plugin choices
-- exact markdown rendering approach on mobile
+- exact NativeScript plugin choices beyond the current iOS-first flow
+- exact approach for future mobile markdown preview, if it returns later
 - exact level of feature parity for desktop and mobile after the first milestone
 - exact test depth for new clients
 

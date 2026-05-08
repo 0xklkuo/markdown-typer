@@ -60,10 +60,10 @@ This repository is designed to help developers practice and understand:
 - search notes
 - edit notes
 - auto-save
-- first meaningful line becomes the title
+- backend-derived note titles
 - pin / unpin notes
 - soft delete / restore notes
-- markdown preview
+- web markdown preview
 - basic keyboard shortcuts
 
 ### UX
@@ -77,6 +77,7 @@ This repository is designed to help developers practice and understand:
 ### Quality
 
 - backend unit/controller/service tests
+- shared package unit tests
 - frontend component smoke tests
 - one happy-path Playwright e2e test
 - CI workflow
@@ -111,6 +112,24 @@ This repository is designed to help developers practice and understand:
 - [Playwright](https://playwright.dev/)
 
 ---
+
+## Support Status
+
+### Proven current support
+
+- `apps/api` — NestJS notes API
+- `apps/web` — primary reference client
+- `apps/desktop` — thin Electron shell over the web client
+- `apps/mobile` — iOS-first NativeScript client with list/create/open/edit flow
+- shared note domain types, utilities, and reusable notes API client through workspace packages
+
+### Experimental or intentionally limited support
+
+- desktop remains a thin shell and does not add deep native integrations yet
+- mobile support is currently iOS-first only
+- mobile markdown preview is intentionally deferred for now
+- Android support is not included yet
+- packaging and store distribution workflows are not part of the current milestone scope
 
 ## Repository Structure
 
@@ -156,9 +175,10 @@ Key design choices:
 - **database-first** persistence
 - **soft delete + restore**
 - **plain textarea editing**
-- **minimal markdown preview**
-- **no auth / sync / desktop complexity yet**
-- **shared domain and API types package for future clients**
+- **web-first reference client**
+- **desktop as a thin shell over web**
+- **mobile as an intentionally smaller native client**
+- **shared domain contracts and reusable notes API client**
 
 For more detail, see:
 
@@ -302,6 +322,19 @@ pnpm dev:mobile
 
 The mobile app is currently an **iOS-first NativeScript client**.
 
+Current mobile scope includes:
+
+- list notes
+- open a note
+- create a note
+- edit note content
+- autosave changes
+- mobile-first list/detail navigation
+
+Current intentional mobile limitation:
+
+- markdown preview is deferred for now
+
 Use these commands depending on what you need:
 
 - `pnpm mobile:check` — run mobile linting and TypeScript validation without requiring Xcode
@@ -377,13 +410,11 @@ This is intentionally limited to keep the UX simple and avoid browser conflicts.
 
 ## Markdown Preview
 
-The app includes a lightweight **Edit / Preview** toggle.
+Current markdown preview support is intentionally split by client:
 
-It is intentionally minimal:
-
-- no syntax highlighting yet
-- no rich text editing
-- no complex markdown plugin stack
+- **web:** lightweight Edit / Preview toggle
+- **desktop:** inherits the web markdown preview through the Electron shell
+- **mobile:** markdown preview is intentionally deferred for now
 
 The goal is clarity over feature breadth.
 
@@ -398,8 +429,9 @@ Examples of things currently **deferred**:
 - authentication
 - multi-user workspaces
 - sync across devices
-- desktop app
-- mobile app
+- deep desktop integrations beyond the current Electron shell
+- Android support
+- mobile markdown preview
 - collaborative editing
 - rich text editor
 - command palette
@@ -451,9 +483,10 @@ Current intentional limitations include:
 - single-user local mode
 - no auth
 - no sync
-- desktop support is still intentionally thin
+- desktop support is intentionally thin and web-backed
 - mobile support is currently iOS-first and depends on local Xcode setup for native runtime
-- no advanced markdown rendering
+- mobile markdown preview is intentionally deferred
+- no advanced markdown rendering beyond the web client’s lightweight preview
 - no dedicated trash page
 - one happy-path e2e instead of a large e2e suite
 

@@ -22,11 +22,13 @@ The project currently includes:
 
 - NestJS backend
 - Next.js frontend
+- Electron desktop shell
+- NativeScript iOS-first mobile client
 - PostgreSQL + Prisma
 - notes create / edit / search / pin / delete / restore
-- markdown preview
+- web markdown preview
 - keyboard shortcuts
-- backend and frontend tests
+- backend, shared package, and frontend tests
 - one happy-path e2e flow
 
 ## Guiding Rule
@@ -187,7 +189,7 @@ Initial scope:
 - open a note
 - create a note
 - edit content
-- preview markdown in a minimal way
+- keep the mobile experience small and native-feeling
 
 ## Phase 5 — Documentation and Developer Experience
 
@@ -200,7 +202,7 @@ Planned work:
 - update root documentation to reflect the new client apps
 - update architecture documentation with shared boundaries
 - document local setup for web, desktop, and mobile
-- clarify what is stable, experimental, or intentionally limited
+- clearly separate proven support from experimental or intentionally limited support
 - refine scripts and contributor guidance where needed
 
 Expected result:
@@ -208,6 +210,7 @@ Expected result:
 - contributors can understand the repository shape
 - local development remains approachable
 - the educational purpose of the project stays intact
+- current limitations are documented truthfully, especially for desktop and mobile support
 
 ## Phase 6 — Validation and Polish
 
@@ -218,9 +221,10 @@ Goal:
 Planned work:
 
 - run linting, type-checking, and tests across the workspace
-- add focused tests for shared logic and critical client behavior
+- add focused tests for shared logic and critical client behavior where practical
 - verify the desktop app starts correctly
 - verify the mobile app can complete its minimal note flow
+- review CI and release-readiness for the multi-client repository state
 - document known limitations and tradeoffs
 
 Expected result:
@@ -228,6 +232,7 @@ Expected result:
 - the repository remains stable enough to study and extend
 - quality checks continue to support maintainability
 - platform additions do not silently weaken the original project
+- the repository is ready for an updated multi-client release milestone
 
 ## What Will Be Shared
 
@@ -276,10 +281,9 @@ Some details are intentionally left open until implementation proves the simples
 
 Examples:
 
-- exact shared package names
 - exact Electron packaging strategy beyond local development
-- exact NativeScript markdown preview approach
-- how much API client code should be shared versus duplicated
+- if and when mobile markdown preview should return later
+- whether additional mobile or desktop tests should be added beyond the current bounded validation approach
 - whether some current web utilities belong in shared packages
 
 These should be resolved during implementation based on proven need, not speculation.
