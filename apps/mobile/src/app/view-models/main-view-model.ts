@@ -11,8 +11,30 @@ import {
 } from '../services/notes-api';
 
 const AUTOSAVE_DELAY_MS = 500;
+const MAX_NOTE_EXCERPT_LENGTH = 96;
 
-type EditorMode = 'edit' | 'preview';
+type MobileScreen = 'list' | 'detail';
+
+type NoteListItem = {
+  id: string;
+  title: string;
+  excerpt: string;
+  isPinned: boolean;
+};
+
+const buildNoteExcerpt = (content: string): string => {
+  const singleLine = content.replace(/\s+/g, ' ').trim();
+
+  if (!singleLine) {
+    return 'Empty note';
+  }
+
+  if (singleLine.length <= MAX_NOTE_EXCERPT_LENGTH) {
+    return singleLine;
+  }
+
+  return `${singleLine.slice(0, MAX_NOTE_EXCERPT_LENGTH).trimEnd()}…`;
+};
 
 export class MainViewModel extends Observable {
   private autosaveTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -20,15 +42,15 @@ export class MainViewModel extends Observable {
   private selectedNoteId: string | null = null;
 
   notes: Note[] = [];
+  noteListItems: NoteListItem[] = [];
   selectedNote: Note | null = null;
   editorContent = '';
-  previewContent = '';
-  previewContentText = 'Nothing to preview yet.';
   selectedTitle = 'Select a note';
   statusText = 'Ready';
   errorMessage = '';
   isBusy = false;
-  mode: EditorMode = 'edit';
+  screen: MobileScreen = 'list';
+  canGoBack = false;
 
   constructor() {
     super();
@@ -47,13 +69,17 @@ export class MainViewModel extends Observable {
     try {
       const notes = await listNotes();
       this.notes = sortNotes(notes);
+      this.noteListItems = this.notes.map((note) => ({
+        id: note.id,
+        title: note.title,
+        excerpt: buildNoteExcerpt(note.content),
+        isPinned: note.isPinned,
+      }));
       this.notifyPropertyChange('notes', this.notes);
+      this.notifyPropertyChange('noteListItems', this.noteListItems);
 
-      const firstNote = this.notes[0];
-
-      if (!this.selectedNoteId && firstNote) {
-        await this.selectNote(firstNote.id);
-        return;
+      if (!this.selectedNoteId) {
+        this.showList();
       }
     } catch (error: unknown) {
       this.setError(
@@ -71,8 +97,11 @@ export class MainViewModel extends Observable {
     try {
       const note = await createNote({ content: '' });
       this.notes = upsertSortedNote(this.notes, note);
+      this.syncNoteListItems();
       this.notifyPropertyChange('notes', this.notes);
+      this.notifyPropertyChange('noteListItems', this.noteListItems);
       await this.applySelectedNote(note);
+      this.showDetail();
     } catch (error: unknown) {
       this.setError(
         error instanceof Error ? error.message : 'Failed to create note.',
@@ -89,6 +118,7 @@ export class MainViewModel extends Observable {
     try {
       const note = await getNoteById(noteId);
       await this.applySelectedNote(note);
+      this.showDetail();
     } catch (error: unknown) {
       this.setError(
         error instanceof Error ? error.message : 'Failed to load note.',
@@ -98,21 +128,26 @@ export class MainViewModel extends Observable {
     }
   }
 
-  setMode(mode: EditorMode): void {
-    this.mode = mode;
-    this.notifyPropertyChange('mode', this.mode);
+  showList(): void {
+    this.screen = 'list';
+    this.canGoBack = false;
+    this.notifyPropertyChange('screen', this.screen);
+    this.notifyPropertyChange('canGoBack', this.canGoBack);
+  }
+
+  showDetail(): void {
+    this.screen = 'detail';
+    this.canGoBack = true;
+    this.notifyPropertyChange('screen', this.screen);
+    this.notifyPropertyChange('canGoBack', this.canGoBack);
   }
 
   updateEditorContent(content: string): void {
     this.editorContent = content;
-    this.previewContent = content;
-    this.previewContentText = content || 'Nothing to preview yet.';
     this.statusText =
       content === this.latestSavedContent ? 'Saved' : 'Unsaved changes';
 
     this.notifyPropertyChange('editorContent', this.editorContent);
-    this.notifyPropertyChange('previewContent', this.previewContent);
-    this.notifyPropertyChange('previewContentText', this.previewContentText);
     this.notifyPropertyChange('statusText', this.statusText);
 
     this.queueAutosave();
@@ -146,7 +181,9 @@ export class MainViewModel extends Observable {
       });
 
       this.notes = upsertSortedNote(this.notes, updatedNote);
+      this.syncNoteListItems();
       this.notifyPropertyChange('notes', this.notes);
+      this.notifyPropertyChange('noteListItems', this.noteListItems);
       await this.applySelectedNote(updatedNote);
       this.statusText = 'Saved';
       this.notifyPropertyChange('statusText', this.statusText);
@@ -163,18 +200,23 @@ export class MainViewModel extends Observable {
     this.selectedNoteId = note.id;
     this.selectedNote = note;
     this.editorContent = note.content;
-    this.previewContent = note.content;
-    this.previewContentText = note.content || 'Nothing to preview yet.';
     this.latestSavedContent = note.content;
     this.selectedTitle = note.title;
     this.statusText = 'Saved';
 
     this.notifyPropertyChange('selectedNote', this.selectedNote);
     this.notifyPropertyChange('editorContent', this.editorContent);
-    this.notifyPropertyChange('previewContent', this.previewContent);
-    this.notifyPropertyChange('previewContentText', this.previewContentText);
     this.notifyPropertyChange('selectedTitle', this.selectedTitle);
     this.notifyPropertyChange('statusText', this.statusText);
+  }
+
+  private syncNoteListItems(): void {
+    this.noteListItems = this.notes.map((note) => ({
+      id: note.id,
+      title: note.title,
+      excerpt: buildNoteExcerpt(note.content),
+      isPinned: note.isPinned,
+    }));
   }
 
   private setBusy(value: boolean): void {

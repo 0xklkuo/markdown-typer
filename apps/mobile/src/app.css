@@ -7,31 +7,89 @@ ActionBar {
   color: #ffffff;
 }
 
-TextView {
-  min-height: 220;
-  padding: 12;
-  background-color: #ffffff;
-  border-width: 1;
-  border-color: #e2e8f0;
-  border-radius: 12;
+.screen {
+  padding: 16;
 }
 
-ListView {
-  height: 260;
-  background-color: #ffffff;
+.screen-title {
+  color: #0f172a;
+  font-size: 24;
+  font-weight: 700;
 }
 
-.note-excerpt {
+.screen-subtitle {
+  color: #64748b;
+  font-size: 13;
+  margin-top: 4;
+  margin-bottom: 16;
+}
+
+.list-create-button {
+  color: #ffffff;
+  background-color: #2563eb;
+  border-radius: 999;
+  padding: 12 16;
+  font-size: 14;
+  font-weight: 600;
+  horizontal-alignment: left;
+  margin-bottom: 12;
+}
+
+.notes-list {
+  background-color: #ffffff;
+  border-radius: 16;
+}
+
+.note-row {
+  padding: 14;
+  border-bottom-width: 1;
+  border-bottom-color: #e2e8f0;
+}
+
+.note-row-title {
+  color: #0f172a;
+  font-size: 16;
+  font-weight: 600;
+}
+
+.note-row-excerpt {
   color: #64748b;
   font-size: 12;
   margin-top: 4;
 }
 
-.preview {
+.detail-header {
+  margin-bottom: 12;
+}
+
+.detail-back-button {
+  color: #2563eb;
+  font-size: 13;
+  font-weight: 600;
+  margin-bottom: 8;
+}
+
+.detail-title {
+  color: #0f172a;
+  font-size: 22;
+  font-weight: 700;
+}
+
+.detail-status {
+  font-size: 12;
+  margin-top: 4;
+  margin-bottom: 12;
+}
+
+.detail-error {
+  margin-bottom: 12;
+}
+
+TextView {
+  min-height: 320;
   padding: 12;
   background-color: #ffffff;
   border-width: 1;
   border-color: #e2e8f0;
   border-radius: 12;
-  color: #0f172a;
 }
