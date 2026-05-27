@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildNotesPageUrl } from './notes-routing';
+import { buildNotesPageUrl } from '@/features/notes/lib/notes-routing';
 
 describe('buildNotesPageUrl', () => {
   it('builds a note page URL with trimmed query params', () => {

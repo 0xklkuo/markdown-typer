@@ -9,10 +9,11 @@ const __dirname = dirname(__filename);
 export default [
   ...baseConfig,
   {
-    files: ['**/*.ts'],
+    files: ['src/**/*.ts', 'nativescript.config.ts'],
+    ignores: ['references.d.ts', 'vite.config.ts'],
     languageOptions: {
       parserOptions: {
-        project: './tsconfig.json',
+        project: './tsconfig.eslint.json',
         tsconfigRootDir: __dirname,
       },
     },
