@@ -7,6 +7,8 @@ import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 
 import { sortNotes, upsertSortedNote } from '@markdown-typer/shared-notes';
 
+import { buildNotesPageUrl } from '../lib/notes-routing';
+
 import { deleteNote, pinNote, restoreNote, unpinNote } from '../api/notes-api';
 import { Note } from '../types/note';
 import { NoteEditor } from './note-editor';
@@ -87,21 +89,15 @@ export const SelectedNoteWorkspace = ({
         currentNotes.filter((note) => note.id !== selectedNote.id),
       );
 
-      const params = new URLSearchParams();
-
-      if (searchQuery?.trim()) {
-        params.set('q', searchQuery.trim());
-      }
-
-      if (includeDeleted) {
-        params.set('includeDeleted', 'true');
-      }
-
-      const nextUrl = params.toString()
-        ? `/notes?${params.toString()}`
-        : '/notes';
-
-      router.push(nextUrl);
+      router.push(
+        buildNotesPageUrl({
+          pathname: '/notes',
+          query: {
+            q: searchQuery,
+            includeDeleted,
+          },
+        }),
+      );
       router.refresh();
     } catch (error: unknown) {
       setActionErrorMessage(

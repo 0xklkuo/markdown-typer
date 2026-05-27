@@ -60,6 +60,33 @@ describe('NotesList', () => {
     expect(screen.getByText('No notes yet.')).toBeInTheDocument();
   });
 
+  it('preserves note query state in note links', () => {
+    render(
+      <NotesList
+        notes={[
+          {
+            id: 'note_1',
+            title: 'Weekly Planning',
+            content: '# Weekly Planning\n- ship MVP',
+            isPinned: false,
+            createdAt: '2026-01-01T00:00:00.000Z',
+            updatedAt: '2026-01-01T00:00:00.000Z',
+            deletedAt: null,
+          },
+        ]}
+        searchQuery="  weekly planning  "
+        includeDeleted
+      />,
+    );
+
+    expect(
+      screen.getByRole('link', { name: /Weekly Planning/i }),
+    ).toHaveAttribute(
+      'href',
+      '/notes/note_1?q=weekly+planning&includeDeleted=true',
+    );
+  });
+
   it('renders notes inside a responsive scroll container', () => {
     const { container } = render(
       <NotesList

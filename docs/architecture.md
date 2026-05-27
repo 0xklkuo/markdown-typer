@@ -212,7 +212,7 @@ When an app or test needs the same note-facing contract shape, it should prefer 
 Owns small framework-agnostic note helpers such as:
 
 - note sorting helpers
-- note list query param helpers
+- note list query param helpers used by web note routing
 - reusable notes API client factory
 
 ### Shared package rule

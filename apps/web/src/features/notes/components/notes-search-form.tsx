@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 
+import { buildNotesPageUrl } from '../lib/notes-routing';
+
 export const NotesSearchForm = (): React.ReactElement => {
   const pathname = usePathname();
   const router = useRouter();
@@ -25,26 +27,16 @@ export const NotesSearchForm = (): React.ReactElement => {
   }, [searchParams]);
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (debouncedQuery.trim()) {
-      params.set('q', debouncedQuery.trim());
-    } else {
-      params.delete('q');
-    }
-
-    if (includeDeleted) {
-      params.set('includeDeleted', 'true');
-    } else {
-      params.delete('includeDeleted');
-    }
-
-    const nextUrl = params.toString()
-      ? `${pathname}?${params.toString()}`
-      : pathname;
-
-    router.replace(nextUrl);
-  }, [debouncedQuery, includeDeleted, pathname, router, searchParams]);
+    router.replace(
+      buildNotesPageUrl({
+        pathname,
+        query: {
+          q: debouncedQuery,
+          includeDeleted,
+        },
+      }),
+    );
+  }, [debouncedQuery, includeDeleted, pathname, router]);
 
   useKeyboardShortcut({
     key: '/',

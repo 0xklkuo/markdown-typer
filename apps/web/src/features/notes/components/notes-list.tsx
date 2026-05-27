@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { buildNotesPageUrl } from '../lib/notes-routing';
 import { Note } from '../types/note';
 
 type NotesListProps = {
@@ -38,18 +39,13 @@ export const NotesList = ({
           {notes.map((note) => {
             const isSelected = note.id === selectedNoteId;
 
-            const query = {
-              ...(searchQuery?.trim() ? { q: searchQuery.trim() } : {}),
-              ...(includeDeleted ? { includeDeleted: 'true' } : {}),
-            };
-
-            const href =
-              Object.keys(query).length > 0
-                ? {
-                    pathname: `/notes/${note.id}`,
-                    query,
-                  }
-                : `/notes/${note.id}`;
+            const href = buildNotesPageUrl({
+              pathname: `/notes/${note.id}`,
+              query: {
+                q: searchQuery,
+                includeDeleted,
+              },
+            });
 
             return (
               <li key={note.id}>
