@@ -73,6 +73,7 @@ Why it matters:
 Typical outcomes:
 
 - accurate README and docs
+- documentation consolidated around `README.md`, `docs/spec.md`, `docs/architecture.md`, and `docs/roadmap.md`
 - architecture and roadmap wording aligned with reality
 - contributor guidance aligned with current scripts and support limits
 - avoidable framework-tooling warnings removed
@@ -90,6 +91,7 @@ Typical outcomes:
 - documented per-app runtime config inputs
 - fewer hardcoded local URLs in clients
 - clearer local-development and CI expectations
+- desktop and mobile configuration behavior that is explicit instead of implicit
 
 ### 3. Contract and boundary cleanup
 
@@ -131,7 +133,7 @@ Typical outcomes:
 
 - green workspace checks
 - stable build and e2e workflows
-- an honest publish checklist and known-limitations story
+- an honest validation and known-limitations story
 
 ---
 

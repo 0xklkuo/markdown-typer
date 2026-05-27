@@ -81,7 +81,7 @@ This repository is designed to help developers practice and understand:
 - frontend component smoke tests
 - one happy-path Playwright e2e test
 - CI workflow
-- contributor docs and templates
+- core project docs and GitHub templates
 
 ---
 
@@ -147,9 +147,9 @@ packages/
   shared-notes/         # shared pure note utilities
 
 docs/
+  spec.md
   architecture.md
   roadmap.md
-  publish-checklist.md
 
 .github/
   workflows/
@@ -182,6 +182,7 @@ Key design choices:
 
 For more detail, see:
 
+- [`docs/spec.md`](./docs/spec.md)
 - [`docs/architecture.md`](./docs/architecture.md)
 - [`docs/roadmap.md`](./docs/roadmap.md)
 
@@ -443,12 +444,15 @@ The core rule is:
 
 ---
 
-## Documentation
+## Core Documentation
 
-- [Architecture](./docs/architecture.md)
-- [Roadmap](./docs/roadmap.md)
-- [Publish Checklist](./docs/publish-checklist.md)
-- [Contributing Guide](./CONTRIBUTING.md)
+- [README](./README.md) — overview, setup, scripts, support status, and quick contributor guidance
+- [Specification](./docs/spec.md) — scope, refactor decisions, constraints, and acceptance criteria
+- [Architecture](./docs/architecture.md) — ownership boundaries and system rules
+- [Roadmap](./docs/roadmap.md) — current priorities, next work, and deferred items
+
+Supporting reference:
+
 - [Changelog](./CHANGELOG.md)
 
 ---
@@ -463,9 +467,19 @@ Contributions are welcome, especially if they improve:
 - testing
 - focused UX polish
 
-Before contributing, please read:
+Before contributing:
 
-- [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+1. read this README
+2. review [`docs/spec.md`](./docs/spec.md), [`docs/architecture.md`](./docs/architecture.md), and [`docs/roadmap.md`](./docs/roadmap.md)
+3. keep changes small and focused
+4. avoid abstractions or dependencies that do not clearly earn their cost
+5. update docs when behavior, support status, setup, or decisions change
+
+Validation guidance:
+
+- run the smallest useful validation first
+- use `pnpm check`, `pnpm test`, and `pnpm build:ci` when relevant
+- run `pnpm test:e2e` when the change affects end-to-end behavior
 
 Please keep changes:
 

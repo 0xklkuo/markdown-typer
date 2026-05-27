@@ -298,6 +298,21 @@ These items are deferred to protect the project’s learning value and clarity.
 
 ---
 
+## Documentation Boundaries
+
+The project documentation set should stay intentionally small and explicit.
+
+Core project guidance should live in:
+
+- `README.md`
+- `docs/spec.md`
+- `docs/architecture.md`
+- `docs/roadmap.md`
+
+If a standalone document becomes redundant with those core docs, its useful content should be folded back into them instead of leaving overlapping guidance behind.
+
+---
+
 ## Change Rules
 
 When changing the architecture, prefer the option that:
