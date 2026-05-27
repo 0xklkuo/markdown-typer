@@ -17,6 +17,7 @@
     "prisma:cleanup:e2e": "tsx prisma/cleanup-e2e.ts"
   },
   "dependencies": {
+    "@markdown-typer/shared-types": "workspace:*",
     "@nestjs/common": "^11.1.18",
     "@nestjs/core": "^11.1.18",
     "@nestjs/platform-express": "^11.1.18",

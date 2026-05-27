@@ -1,18 +1,10 @@
 import { NotFoundException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { Note as NoteDto } from '@markdown-typer/shared-types';
+
 import { NotesController } from './notes.controller';
 import { NotesService } from './notes.service';
-
-type NoteResponse = {
-  id: string;
-  title: string;
-  content: string;
-  isPinned: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
 
 type NotesServiceMock = {
   createNote: ReturnType<typeof vi.fn>;
@@ -25,9 +17,7 @@ type NotesServiceMock = {
   unpinNote: ReturnType<typeof vi.fn>;
 };
 
-const createNoteResponse = (
-  overrides?: Partial<NoteResponse>,
-): NoteResponse => ({
+const createNoteResponse = (overrides?: Partial<NoteDto>): NoteDto => ({
   id: 'note_1',
   title: 'Weekly Planning',
   content: '# Weekly Planning\n- ship MVP',

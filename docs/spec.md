@@ -97,6 +97,7 @@ These decisions have already been made for the current refactor direction:
 4. **Use environment-driven runtime configuration for desktop and mobile** as the next implementation direction.
 5. **Prefer warning-free, framework-correct tooling** when a small dev-only change can solve a real integration gap.
 6. **Make desktop and mobile runtime inputs explicit per app** instead of relying on hidden localhost defaults.
+7. **Prefer shared domain contracts over app-local duplicate DTOs** when the shared contract is already the true boundary.
 
 ---
 

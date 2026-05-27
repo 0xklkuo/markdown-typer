@@ -1,25 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Note, User } from '@prisma/client';
+import { Note as PrismaNote, User } from '@prisma/client';
+
+import type {
+  GetNoteByIdOptions,
+  ListNotesQuery,
+  Note as NoteDto,
+} from '@markdown-typer/shared-types';
 
 import { getEnv } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
-import type { NoteResponse } from './notes.types';
 import { deriveTitleFromContent } from './notes.utils';
-
-type ListNotesOptions = {
-  q?: string;
-  includeDeleted?: boolean;
-};
-
-type GetNoteOptions = {
-  includeDeleted?: boolean;
-};
 
 @Injectable()
 export class NotesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createNote(content: string): Promise<NoteResponse> {
+  async createNote(content: string): Promise<NoteDto> {
     const user = await this.getDefaultUser();
 
     const note = await this.prisma.note.create({
@@ -33,7 +29,7 @@ export class NotesService {
     return this.toNoteResponse(note);
   }
 
-  async listNotes(options: ListNotesOptions): Promise<NoteResponse[]> {
+  async listNotes(options: ListNotesQuery): Promise<NoteDto[]> {
     const user = await this.getDefaultUser();
     const query = options.q?.trim();
     const includeDeleted = options.includeDeleted ?? false;
@@ -69,14 +65,14 @@ export class NotesService {
 
   async getNoteById(
     id: string,
-    options?: GetNoteOptions,
-  ): Promise<NoteResponse> {
+    options?: GetNoteByIdOptions,
+  ): Promise<NoteDto> {
     const note = await this.requireNote(id, options?.includeDeleted ?? false);
 
     return this.toNoteResponse(note);
   }
 
-  async updateNote(id: string, content: string): Promise<NoteResponse> {
+  async updateNote(id: string, content: string): Promise<NoteDto> {
     const note = await this.requireActiveNote(id);
 
     const updatedNote = await this.prisma.note.update({
@@ -90,7 +86,7 @@ export class NotesService {
     return this.toNoteResponse(updatedNote);
   }
 
-  async deleteNote(id: string): Promise<NoteResponse> {
+  async deleteNote(id: string): Promise<NoteDto> {
     const note = await this.requireActiveNote(id);
 
     const deletedNote = await this.prisma.note.update({
@@ -103,7 +99,7 @@ export class NotesService {
     return this.toNoteResponse(deletedNote);
   }
 
-  async restoreNote(id: string): Promise<NoteResponse> {
+  async restoreNote(id: string): Promise<NoteDto> {
     const note = await this.requireNote(id, true);
 
     const restoredNote = await this.prisma.note.update({
@@ -116,18 +112,18 @@ export class NotesService {
     return this.toNoteResponse(restoredNote);
   }
 
-  async pinNote(id: string): Promise<NoteResponse> {
+  async pinNote(id: string): Promise<NoteDto> {
     return this.updatePinnedState(id, true);
   }
 
-  async unpinNote(id: string): Promise<NoteResponse> {
+  async unpinNote(id: string): Promise<NoteDto> {
     return this.updatePinnedState(id, false);
   }
 
   private async updatePinnedState(
     id: string,
     isPinned: boolean,
-  ): Promise<NoteResponse> {
+  ): Promise<NoteDto> {
     const note = await this.requireActiveNote(id);
 
     const updatedNote = await this.prisma.note.update({
@@ -159,7 +155,7 @@ export class NotesService {
   private async requireNote(
     id: string,
     includeDeleted: boolean,
-  ): Promise<Note> {
+  ): Promise<PrismaNote> {
     const user = await this.getDefaultUser();
 
     const note = await this.prisma.note.findFirst({
@@ -177,11 +173,11 @@ export class NotesService {
     return note;
   }
 
-  private async requireActiveNote(id: string): Promise<Note> {
+  private async requireActiveNote(id: string): Promise<PrismaNote> {
     return this.requireNote(id, false);
   }
 
-  private readonly toNoteResponse = (note: Note): NoteResponse => ({
+  private readonly toNoteResponse = (note: PrismaNote): NoteDto => ({
     id: note.id,
     title: note.title,
     content: note.content,

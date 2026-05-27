@@ -205,6 +205,8 @@ Owns shared TypeScript contracts such as:
 - list and detail query types
 - note input payload types
 
+When an app or test needs the same note-facing contract shape, it should prefer these shared types instead of redefining an app-local duplicate.
+
 ### `packages/shared-notes`
 
 Owns small framework-agnostic note helpers such as:
