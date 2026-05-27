@@ -96,6 +96,7 @@ These decisions have already been made for the current refactor direction:
 3. **Keep Milestone 1 moderate and low-risk**, focusing on documentation alignment and tooling correctness before structural code cleanup.
 4. **Use environment-driven runtime configuration for desktop and mobile** as the next implementation direction.
 5. **Prefer warning-free, framework-correct tooling** when a small dev-only change can solve a real integration gap.
+6. **Make desktop and mobile runtime inputs explicit per app** instead of relying on hidden localhost defaults.
 
 ---
 
@@ -135,7 +136,8 @@ The current refactor direction is succeeding if:
 - redundant project guidance has been folded into those docs or removed
 - support status and intentional limitations are clear
 - major tooling warnings are removed
-- the next milestone can focus on environment-driven runtime configuration without documentation ambiguity
+- desktop runtime configuration is explicit through `apps/desktop/.env`
+- mobile runtime configuration is explicit through `apps/mobile/.env`
 
 ---
 

@@ -212,6 +212,8 @@ pnpm install
 ```bash
 cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env.local
+cp apps/desktop/.env.example apps/desktop/.env
+cp apps/mobile/.env.example apps/mobile/.env
 ```
 
 ### 3) Run database migration
@@ -239,7 +241,7 @@ pnpm dev
 - Web: `http://localhost:3000`
 - API: `http://localhost:3210/api`
 - API health: `http://localhost:3210/api/health`
-- Desktop shell: loads the local web app at `http://localhost:3000`
+- Desktop shell: loads the URL configured in `apps/desktop/.env` (example: `http://localhost:3000`)
 
 ---
 
@@ -263,6 +265,22 @@ Example:
 
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:3210/api
+```
+
+### Desktop (`apps/desktop/.env`)
+
+Example:
+
+```env
+DESKTOP_WEB_APP_URL=http://localhost:3000
+```
+
+### Mobile (`apps/mobile/.env`)
+
+Example:
+
+```env
+NATIVE_SCRIPT_API_BASE_URL=http://localhost:3210/api
 ```
 
 ---
@@ -322,6 +340,8 @@ pnpm dev:mobile
 ## Mobile Development Notes
 
 The mobile app is currently an **iOS-first NativeScript client**.
+
+Its runtime API base URL is configured through `apps/mobile/.env`.
 
 Current mobile scope includes:
 
@@ -450,6 +470,8 @@ The core rule is:
 - [Specification](./docs/spec.md) — scope, refactor decisions, constraints, and acceptance criteria
 - [Architecture](./docs/architecture.md) — ownership boundaries and system rules
 - [Roadmap](./docs/roadmap.md) — current priorities, next work, and deferred items
+
+This refactor keeps project guidance centered on these four docs and moves desktop/mobile runtime configuration toward explicit per-app environment inputs.
 
 Supporting reference:
 

@@ -5,15 +5,18 @@ import {
   DESKTOP_APP_NAME,
   DESKTOP_PRELOAD_PATH,
   DESKTOP_WINDOW_BOUNDS,
-  WEB_DEV_SERVER_URL,
 } from '../shared/config.js';
+import {
+  DESKTOP_WEB_APP_ORIGIN,
+  DESKTOP_WEB_APP_URL,
+} from '../shared/runtime-config.js';
 
 const createMainWindow = (): BrowserWindow => {
   const isAllowedAppUrl = (value: string): boolean => {
     try {
       const url = new URL(value);
 
-      return url.origin === WEB_DEV_SERVER_URL;
+      return url.origin === DESKTOP_WEB_APP_ORIGIN;
     } catch {
       return false;
     }
@@ -68,7 +71,7 @@ const createMainWindow = (): BrowserWindow => {
     window.show();
   });
 
-  void window.loadURL(WEB_DEV_SERVER_URL);
+  void window.loadURL(DESKTOP_WEB_APP_URL);
 
   return window;
 };

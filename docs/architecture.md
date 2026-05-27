@@ -298,6 +298,21 @@ These items are deferred to protect the project’s learning value and clarity.
 
 ---
 
+## Runtime Configuration
+
+Runtime configuration should stay explicit and close to the app that consumes it.
+
+Current rule:
+
+- `apps/web` reads its public API base URL from web-specific environment configuration
+- `apps/desktop` reads its target web app URL from `apps/desktop/.env`
+- `apps/mobile` reads its API base URL from `apps/mobile/.env`
+- app runtime inputs should be documented in `README.md` and `docs/spec.md`
+
+This keeps platform behavior visible and reduces reliance on hidden local defaults.
+
+---
+
 ## Documentation Boundaries
 
 The project documentation set should stay intentionally small and explicit.

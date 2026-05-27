@@ -12,7 +12,6 @@ export const DESKTOP_WINDOW_BOUNDS = {
   minHeight: 720,
 } as const;
 
-export const WEB_DEV_SERVER_URL = 'http://localhost:3000';
 export const DESKTOP_DIST_DIR = path.resolve(__dirname, '../../dist');
 export const DESKTOP_PRELOAD_PATH = path.resolve(
   DESKTOP_DIST_DIR,

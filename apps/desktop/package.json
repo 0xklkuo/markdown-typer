@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "electron": "^41.3.0"
   },
   "devDependencies": {
