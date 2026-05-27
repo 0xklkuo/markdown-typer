@@ -2,332 +2,188 @@
 
 ## Purpose
 
-This roadmap keeps the project focused while it grows from a web-first learning app into a small multi-client learning platform.
+This roadmap is a decision guide for improving Markdown Typer without losing the project’s main value: being a clean, self-educational full-stack reference.
 
-The goal is to expand carefully without losing the repository's core values:
+It is intentionally conservative.
+It should help contributors choose the next clear improvement, not justify unnecessary expansion.
 
-- clarity
-- minimalism
-- maintainability
-- testability
-- incremental learning
-- avoiding over-engineering
+---
 
-This roadmap is intentionally conservative.
-It favors a stable foundation over fast feature expansion.
+## Current Baseline
 
-## Current State
+The repository already includes:
 
-The project currently includes:
-
-- NestJS backend
-- Next.js frontend
+- NestJS API
+- Next.js web client
 - Electron desktop shell
 - NativeScript iOS-first mobile client
-- PostgreSQL + Prisma
-- notes create / edit / search / pin / delete / restore
-- web markdown preview
-- keyboard shortcuts
-- backend, shared package, and frontend tests
-- one happy-path e2e flow
+- PostgreSQL + Prisma persistence
+- shared note contracts and note helpers
+- workspace lint, typecheck, format, test, and build workflows
+- one happy-path Playwright e2e flow
+
+The current feature set already covers the core note workflow:
+
+- create
+- browse
+- search
+- edit with autosave
+- pin / unpin
+- soft delete / restore
+- markdown preview on web
+- keyboard shortcuts on web
+
+---
 
 ## Guiding Rule
 
-New features should only be added if they improve learning value without significantly increasing architectural complexity.
+New work should be accepted only if it improves one or more of these without adding disproportionate complexity:
 
-## Multi-Client Direction
+- learning value
+- code clarity
+- maintainability
+- testability
+- developer experience
 
-The repository will evolve in phases.
+---
 
-The intended long-term shape is:
+## What Is Already Established
 
-```/dev/null/roadmap-target.txt#L1-10
-apps/
-  api/
-  web/
-  desktop/
-  mobile/
+These foundations are already in place and should be treated as current reality, not future aspirations:
 
-packages/
-  config-eslint/
-  config-typescript/
-  shared-types/
-  shared-notes/
-```
+- web is the primary reference client
+- desktop is a thin shell over the web app
+- mobile is intentionally smaller and iOS-first
+- the backend is the source of truth for note behavior
+- shared packages exist for note contracts and pure note helpers
+- the repository is already multi-client, but not feature-parity driven
 
-This target structure is a direction, not a promise.
-Some package names or boundaries may change during implementation if a simpler structure proves better.
+---
 
-## Principles for Expansion
+## Current Priorities
 
-As the repository grows, new work should follow these rules:
+### 1. Documentation and developer-experience alignment
 
-- keep the API as the main source of truth
-- share domain types and pure logic before sharing UI
-- prefer thin client shells over heavy platform-specific abstractions
-- keep platform-specific code small and explicit
-- add tests around shared logic before broadening client support
-- document proven behavior separately from planned behavior
-- avoid introducing complexity only for theoretical reuse
+Why it matters:
 
-## Phased Plan
+- the project should describe the repository as it exists today
+- contributors should not need to infer which support is proven versus intentionally limited
+- build and lint tooling should be warning-free where practical
 
-## Phase 0 — Shared Boundaries and Architecture
+Typical outcomes:
 
-Goal:
+- accurate README and docs
+- architecture and roadmap wording aligned with reality
+- contributor guidance aligned with current scripts and support limits
+- avoidable framework-tooling warnings removed
 
-- define the minimum architecture needed for multi-client support
-- clarify what should be shared and what should stay platform-specific
-- establish goals and non-goals before implementation
+### 2. Environment-driven runtime configuration
 
-Planned outcomes:
+Why it matters:
 
-- shared package boundaries for types and pure note logic
-- a client capability matrix
-- a phased implementation plan for web, desktop, and mobile
-- updated architecture and roadmap documentation
+- desktop and mobile currently depend on local development defaults
+- configuration should become more explicit before the project grows further
+- consistent runtime configuration improves clarity and portability
 
-Why this phase exists:
+Typical outcomes:
 
-- the current repository is intentionally web-first
-- desktop and mobile support should not be added until the boundaries are clear
-- this reduces rework and keeps the project educational
+- documented per-app runtime config inputs
+- fewer hardcoded local URLs in clients
+- clearer local-development and CI expectations
 
-## Phase 1 — Web Foundation Hardening
+### 3. Contract and boundary cleanup
 
-Goal:
+Why it matters:
 
-- make the web app the stable reference client for future platform work
+- some types and configuration decisions are still duplicated across layers
+- small cleanup now is cheaper than broad refactoring later
+- shared code should reflect clear ownership boundaries
 
-Planned work:
+Typical outcomes:
 
-- add `tailwindcss-typography` for markdown preview
-- improve responsive layout for smaller screens
-- refine reusable component boundaries inside the web app
-- extract reusable types from web-specific code
-- keep existing tests green and add focused tests where needed
+- less duplication between API and client contracts
+- clearer responsibility lines between app code and shared packages
+- no forced abstraction beyond what is already justified
 
-Expected result:
+### 4. Web reference-client simplification
 
-- the web app remains the clearest implementation of the product
-- responsive behavior improves
-- markdown preview styling becomes simpler and more maintainable
-- shared contracts begin to move out of app-local code
+Why it matters:
 
-## Phase 2 — Shared Packages
+- the web app remains the main place where product behavior is proven
+- small simplifications here improve the whole repository’s readability
+- responsive and editor-related flows benefit from steady cleanup
 
-Goal:
+Typical outcomes:
 
-- create a small shared foundation for multiple clients
+- simpler state flow where possible
+- focused component boundaries
+- targeted tests around important user behavior
 
-Planned work:
+### 5. Validation and publish readiness
 
-- add a shared types package for note and API contract types
-- add a shared pure-logic package for note-related utilities where useful
-- move reusable tests for pure logic closer to shared packages
-- keep framework-specific UI code inside each app
+Why it matters:
 
-Expected result:
+- the project should remain easy to run, study, and verify
+- release confidence comes from simple, repeatable checks
+- support claims should stay grounded in proven behavior
 
-- web, desktop, and mobile clients can depend on the same domain contracts
-- duplication is reduced without forcing premature abstraction
-- shared code remains small, explicit, and easy to understand
+Typical outcomes:
 
-## Phase 3 — Desktop App (Electron, macOS-first)
+- green workspace checks
+- stable build and e2e workflows
+- an honest publish checklist and known-limitations story
 
-Goal:
+---
 
-- add a minimal desktop client for macOS using Electron
+## Backlog Candidates
 
-Planned work:
+These are reasonable future improvements, but not automatic commitments:
 
-- create a thin Electron shell
-- load the existing web app during development
-- keep Electron-specific code limited to app lifecycle and shell concerns
-- preserve secure defaults such as context isolation
-- document local development workflow for desktop support
+- better desktop development ergonomics
+- more explicit mobile environment and runtime setup
+- focused tests around shared client behavior
+- further cleanup of low-value duplication
+- incremental responsive and editor UX polish on web
 
-Expected result:
+Each should be evaluated against the guiding rule before implementation.
 
-- the project gains a desktop entry point without duplicating product logic
-- the desktop app stays intentionally thin
-- the web app continues to provide most of the UI behavior
+---
 
-Initial scope:
+## Explicitly Deferred
 
-- browse notes
-- open notes
-- edit notes
-- preview markdown
-- use the existing backend API
-
-## Phase 4 — Mobile App (NativeScript, iOS-first)
-
-Goal:
-
-- add a minimal iOS client using NativeScript
-
-Planned work:
-
-- create a NativeScript app with a small note workflow
-- reuse shared types and pure logic where practical
-- keep mobile UI native to the platform instead of forcing web UI reuse
-- implement a minimal note list and note detail flow
-- document local development workflow for mobile support
-- distinguish code validation scripts from native iOS runtime scripts
-
-Expected result:
-
-- the repository demonstrates how one backend can support multiple client types
-- mobile support remains intentionally narrow and educational
-- shared logic is reused where it helps, not where it harms clarity
-- contributors can tell whether a failure is caused by app code or missing Apple tooling
-
-Initial scope:
-
-- list notes
-- open a note
-- create a note
-- edit content
-- keep the mobile experience small and native-feeling
-
-## Phase 5 — Documentation and Developer Experience
-
-Goal:
-
-- make the expanded repository understandable and runnable
-
-Planned work:
-
-- update root documentation to reflect the new client apps
-- update architecture documentation with shared boundaries
-- document local setup for web, desktop, and mobile
-- clearly separate proven support from experimental or intentionally limited support
-- refine scripts and contributor guidance where needed
-
-Expected result:
-
-- contributors can understand the repository shape
-- local development remains approachable
-- the educational purpose of the project stays intact
-- current limitations are documented truthfully, especially for desktop and mobile support
-
-## Phase 6 — Validation and Polish
-
-Goal:
-
-- confirm the repository still meets its quality bar after expansion
-
-Planned work:
-
-- run linting, type-checking, and tests across the workspace
-- add focused tests for shared logic and critical client behavior where practical
-- verify the desktop app starts correctly
-- verify the mobile app can complete its minimal note flow
-- review CI and release-readiness for the multi-client repository state
-- document known limitations and tradeoffs
-
-Expected result:
-
-- the repository remains stable enough to study and extend
-- quality checks continue to support maintainability
-- platform additions do not silently weaken the original project
-- the repository is ready for an updated multi-client release milestone
-
-## What Will Be Shared
-
-The following are good candidates for sharing across clients:
-
-- note domain types
-- API request and response types
-- pure note utilities
-- small API client helpers where they remain framework-agnostic
-- testable business rules that do not depend on UI frameworks
-
-## What Will Not Be Shared Aggressively
-
-The following should remain platform-specific unless a very clear need appears:
-
-- React web components
-- NativeScript UI components
-- Electron shell code
-- routing implementations
-- platform-specific state and lifecycle code
-- styling systems beyond shared design intent
-
-The project should prefer duplication over harmful abstraction when the duplicated code is small and easier to understand.
-
-## Non-Goals
-
-The following are not goals of this roadmap right now:
+The following are intentionally not current priorities:
 
 - authentication
 - sync across devices
+- offline-first architecture
 - multi-user workspaces
 - collaborative editing
-- offline-first architecture
 - rich text editing
 - advanced markdown plugin stacks
-- cross-platform desktop packaging beyond the initial macOS focus
+- large shared UI abstractions across platforms
 - Android support in the first mobile phase
-- a fully shared UI layer across web and mobile
-- enterprise-style architecture layers added only for scale assumptions
+- packaging, signing, and store distribution workflows as a near-term goal
+- broad e2e suites for every client surface
 
-These are intentionally excluded to protect simplicity and learning value.
+These are deferred to protect simplicity and learning value.
 
-## Known Uncertainties
-
-Some details are intentionally left open until implementation proves the simplest path.
-
-Examples:
-
-- exact Electron packaging strategy beyond local development
-- if and when mobile markdown preview should return later
-- whether additional mobile or desktop tests should be added beyond the current bounded validation approach
-- whether some current web utilities belong in shared packages
-
-These should be resolved during implementation based on proven need, not speculation.
-
-## Near-Term Priority Order
-
-The recommended implementation order is:
-
-1. define shared boundaries and documentation
-2. strengthen the web app foundation
-3. extract shared types and pure logic
-4. add the Electron desktop shell
-5. add the NativeScript mobile app
-6. refine documentation and validation
-
-This order reduces rework and keeps the repository stable while it expands.
+---
 
 ## Success Criteria
 
 The roadmap is succeeding if:
 
-- the web app remains simple and maintainable
-- shared code is small and clearly justified
-- desktop support works without major architectural distortion
-- mobile support demonstrates the same backend serving another client type
-- documentation stays aligned with the actual repository state
-- contributors can still understand the project without reading excessive abstraction layers
+- docs match the actual repository state
+- the web app remains the clearest implementation of product behavior
+- shared code stays small and justified
+- desktop and mobile support remain understandable and intentionally scoped
+- contributors can run the project without hidden assumptions
+- validation stays practical and trustworthy
 
-## Deferred Items
-
-These remain intentionally deferred unless the project proves a clear need for them later:
-
-- auth
-- sync
-- multi-user workspaces
-- advanced markdown tooling
-- rich text editing
-- broad platform packaging and distribution workflows
-- large e2e suites for every client
-- deep design system abstraction across all platforms
+---
 
 ## Final Note
 
-This roadmap is a planning document, not a guarantee.
+This roadmap is not a promise to expand the project indefinitely.
 
-If implementation shows that a simpler path is better, the simpler path should win.
-The repository should continue to optimize for being a clean learning reference first, and a multi-client product second.
+If implementation shows that a smaller or simpler path is better, the simpler path should win.

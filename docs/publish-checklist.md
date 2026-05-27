@@ -6,23 +6,26 @@ Use this checklist before publicly sharing the repository.
 
 - [ ] README accurately reflects the current project
 - [ ] project is clearly framed as a self-educational playground
-- [ ] roadmap and architecture docs are up to date
+- [ ] architecture and roadmap docs describe the current repository state
+- [ ] docs clearly separate proven support from intentional limitations
 - [ ] license is present
 
 ## Developer Experience
 
 - [ ] local setup instructions work from a clean machine
-- [ ] environment files are documented
+- [ ] environment files and required runtime configuration are documented
+- [ ] desktop and mobile setup instructions are explicit about platform limits
+- [ ] migrations and seed instructions are correct
 - [ ] `pnpm dev` works
 - [ ] `pnpm dev:desktop` works
 - [ ] `pnpm dev:mobile` works on a correctly configured macOS iOS environment
-- [ ] migrations and seed instructions are correct
 
 ## Code Quality
 
 - [ ] `pnpm check` passes
 - [ ] `pnpm test` passes
 - [ ] `pnpm build` passes
+- [ ] `pnpm build:ci` passes without avoidable framework-tooling warnings
 - [ ] `pnpm test:e2e` passes
 
 ## CI / Workflow
@@ -54,6 +57,6 @@ Use this checklist before publicly sharing the repository.
 
 - [ ] no obvious secrets or local-only files are committed
 - [ ] docs use consistent wording
-- [ ] proven support and intentional limitations are clearly documented
-- [ ] known limitations are acceptable
+- [ ] no stale future-tense language remains for features that already exist
+- [ ] known limitations are acceptable and clearly documented
 - [ ] repository is understandable to a new contributor
